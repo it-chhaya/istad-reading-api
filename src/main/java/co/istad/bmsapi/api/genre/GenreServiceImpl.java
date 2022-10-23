@@ -9,9 +9,11 @@ import co.istad.bmsapi.api.genre.web.GenreDto;
 import co.istad.bmsapi.api.genre.web.PostGenreDto;
 import co.istad.bmsapi.data.repository.GenreRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class GenreServiceImpl implements GenreService {
 
     private final GenreRepository genreRepository;
@@ -20,17 +22,9 @@ public class GenreServiceImpl implements GenreService {
     @Override
     public List<GenreDto> findAllGenres() {
 
-        List<GenreDto> genresDto = new ArrayList<>();
         List<Genre> genres = genreRepository.select();
 
-        genres.forEach(genre -> {
-            GenreDto genreDto = new GenreDto();
-            genreDto.setTitle(genre.getTitle());
-            genreDto.setDescription(genre.getDescription());
-            genresDto.add(genreDto);
-            //GenreDto genreDto = modelMapper.map(genre, GenreDto.class);
-            //genresDto.add(genreDto);
-        });
+        List<GenreDto> genresDto = genreMapper.toListDto(genres);
 
         return genresDto;
         
@@ -52,24 +46,18 @@ public class GenreServiceImpl implements GenreService {
     @Override
     public GenreDto postGenre(PostGenreDto body) {
 
-        Genre genre = new Genre();
-        genre.setTitle(body.getTitle());
-        genre.setDescription(body.getDescription());
-        genre.setIcon(body.getIcon());
+        // Convert Dto to Model
+        Genre genre = genreMapper.toPostModel(body);
         genre.setIsEnabled(true);
-        // Genre genre = modelMapper.map(body, Genre.class);
-        // genre.setIsEnabled(true);
+
+        log.info("Genre Before Insert = {}", genre);
 
         genreRepository.insert(genre);
 
-        Genre genreById = genreRepository.selectById(genre.getId());
+        log.info("Genre After Insert = {}", genre);
 
-        GenreDto genreDto = new GenreDto();
-        genreDto.setTitle(genreById.getTitle());
-        genreDto.setDescription(genreById.getDescription());
-        //GenreDto genreDto = modelMapper.map(genreById, GenreDto.class);
-
-        return genreDto;
+        return genreMapper.toDto(genre);
+        
     }
 
 }

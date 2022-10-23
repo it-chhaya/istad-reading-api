@@ -2,6 +2,10 @@ package co.istad.bmsapi.api.genre.web;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,6 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import co.istad.bmsapi.api.genre.Genre;
 import co.istad.bmsapi.api.genre.GenreServiceImpl;
+import co.istad.bmsapi.shared.rest.Rest;
+import co.istad.bmsapi.utils.DateTimeUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -23,8 +29,18 @@ public class GenreRestController {
     private final GenreServiceImpl genreServiceImpl;
 
     @GetMapping
-    public List<GenreDto> getGenre() {
-        return genreServiceImpl.findAllGenres();
+    public ResponseEntity<?> getGenre() {
+
+        List<GenreDto> genresDto = genreServiceImpl.findAllGenres();
+
+        Rest<List<GenreDto>> rest = new Rest<>();
+        rest.setStatus(true);
+        rest.setCode(HttpStatus.OK.value());
+        rest.setMessage("Genre have been fetched");
+        rest.setData(genresDto);
+
+        return ResponseEntity.ok(rest);
+        
     }
 
 
@@ -35,8 +51,16 @@ public class GenreRestController {
 
 
     @PostMapping
-    public GenreDto postGenre(@RequestBody PostGenreDto body) {
-        return genreServiceImpl.postGenre(body);
+    public ResponseEntity<?> postGenre(@Valid @RequestBody PostGenreDto body) {
+        
+        Rest<GenreDto> rest = new Rest<>();
+        rest.setStatus(true);
+        rest.setCode(HttpStatus.CREATED.value());
+        rest.setMessage("Genre has been inserted");
+        rest.setData(genreServiceImpl.postGenre(body));
+
+        return new ResponseEntity<>(rest, HttpStatus.CREATED);
+
     }
 
 }
