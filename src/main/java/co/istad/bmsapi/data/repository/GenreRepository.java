@@ -2,12 +2,14 @@ package co.istad.bmsapi.data.repository;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.InsertProvider;
 import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.ResultMap;
 import org.apache.ibatis.annotations.Results;
+import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.SelectProvider;
 import org.springframework.stereotype.Repository;
 
@@ -29,7 +31,15 @@ public interface GenreRepository {
     void insert(@Param("genre") Genre genre);
 
 
-    @SelectProvider(type = GenreProvider.class, method = "buildSelectByIdSql")
-    @ResultMap(value = "genreResult")
-    Genre selectById(@Param("id") Integer id);
+    @SelectProvider(type = GenreProvider.class, method = "buildSelectWhereIdSql")
+    Genre selectWhereId(@Param("id") Integer id);
+
+
+    @Delete("DELETE FROM genres WHERE id = #{id}")
+    void deleteWhereId(@Param("id") Integer id);
+
+
+    @Select("SELECT EXISTS(SELECT * FROM genres WHERE id = #{id})")
+    boolean checkWhereId(@Param("id") Integer id);
+
 }

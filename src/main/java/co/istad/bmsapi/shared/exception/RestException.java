@@ -9,10 +9,13 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.server.ResponseStatusException;
 
 import co.istad.bmsapi.shared.rest.ApiError;
+import co.istad.bmsapi.shared.rest.Rest;
 import co.istad.bmsapi.shared.rest.RestError;
 import co.istad.bmsapi.utils.DateTimeUtils;
+
 import lombok.extern.slf4j.Slf4j;
 
 @RestControllerAdvice
@@ -40,5 +43,20 @@ public class RestException {
         return new ResponseEntity<>(rest, HttpStatus.BAD_REQUEST);
 
     }
+
+
+    @ExceptionHandler(value = ResponseStatusException.class)
+    public ResponseEntity<?> handleResourceNotFound(ResponseStatusException e) {
+
+        Rest<String> rest = new Rest<>();
+        rest.setStatus(false);
+        rest.setCode(HttpStatus.NOT_FOUND.value());
+        rest.setMessage(e.getReason());
+        rest.setData("RESOURCE_NOT_FOUND");
+
+        return new ResponseEntity<>(rest, HttpStatus.NOT_FOUND);
+
+    }
+
 
 }

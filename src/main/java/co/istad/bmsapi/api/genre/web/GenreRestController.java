@@ -6,6 +6,7 @@ import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -44,12 +45,6 @@ public class GenreRestController {
     }
 
 
-    @GetMapping("/{id}")
-    public GenreDto getGenreById(@PathVariable Integer id) {
-        return genreServiceImpl.findGenreById(id);
-    }
-
-
     @PostMapping
     public ResponseEntity<?> postGenre(@Valid @RequestBody PostGenreDto body) {
         
@@ -60,6 +55,34 @@ public class GenreRestController {
         rest.setData(genreServiceImpl.postGenre(body));
 
         return new ResponseEntity<>(rest, HttpStatus.CREATED);
+
+    }
+
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getGenreById(@PathVariable Integer id) {
+        Rest<GenreDto> rest = new Rest<>();
+        rest.setStatus(true);
+        rest.setCode(HttpStatus.OK.value());
+        rest.setMessage("Genre have been fetched");
+        rest.setData(genreServiceImpl.findGenreById(id));
+
+        return ResponseEntity.ok(rest);
+    }
+
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteGenreById(@PathVariable Integer id) {
+
+        genreServiceImpl.deleteGenreById(id);
+
+        Rest<String> rest = new Rest<>();
+        rest.setStatus(true);
+        rest.setCode(HttpStatus.OK.value());
+        rest.setMessage("Genre has been deleted");
+        rest.setData("DELETED");
+
+        return ResponseEntity.ok(rest);
 
     }
 

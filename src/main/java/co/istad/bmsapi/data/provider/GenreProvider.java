@@ -33,11 +33,11 @@ public class GenreProvider {
     }
 
 
-    public String buildSelectByIdSql() {
+    public String buildSelectWhereIdSql() {
         return new SQL() {{
             SELECT("*");
             FROM("genres");
-            WHERE("id = #{id}");
+            WHERE("id = #{id}", "is_enabled = TRUE");
         }}.toString();
     }
 

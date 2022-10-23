@@ -3,7 +3,9 @@ package co.istad.bmsapi.api.genre;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import co.istad.bmsapi.api.genre.web.GenreDto;
 import co.istad.bmsapi.api.genre.web.PostGenreDto;
@@ -29,18 +31,6 @@ public class GenreServiceImpl implements GenreService {
         return genresDto;
         
     }
-
-
-    @Override
-    public GenreDto findGenreById(Integer id) {
-        
-        Genre genre = genreRepository.selectById(id);
-        System.out.println(genre);
-
-        GenreDto genreDto = genreMapper.toDto(genre);
-        System.out.println(genreDto);
-        return genreDto;
-    }
     
 
     @Override
@@ -58,6 +48,28 @@ public class GenreServiceImpl implements GenreService {
 
         return genreMapper.toDto(genre);
         
+    }
+
+
+    @Override
+    public GenreDto findGenreById(Integer id) {
+        Genre genre = genreRepository.selectWhereId(id);
+        GenreDto genreDto = genreMapper.toDto(genre);
+        return genreDto;
+    }
+
+
+    @Override
+    public void deleteGenreById(Integer id) {
+
+        boolean isFound = genreRepository.checkWhereId(id);
+
+        if (!isFound) {
+            String reason = "Genre with ID = " + id + " is not found in DB";
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, reason);
+        }
+
+        genreRepository.deleteWhereId(id);
     }
 
 }

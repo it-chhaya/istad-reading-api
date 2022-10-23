@@ -9,8 +9,22 @@ public interface GenreService {
     
     List<GenreDto> findAllGenres();
 
+    GenreDto postGenre(PostGenreDto body);
+
+
+    /**
+     * Find genre in db by ID
+     * @param id
+     * @return
+     */
     GenreDto findGenreById(Integer id);
 
-    GenreDto postGenre(PostGenreDto body);
+
+
+    /**
+     * Delete genre from db by ID
+     * @param id
+     */
+    void deleteGenreById(Integer id);
 
 }
