@@ -14,10 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import co.istad.bmsapi.api.genre.Genre;
 import co.istad.bmsapi.api.genre.GenreServiceImpl;
 import co.istad.bmsapi.shared.rest.Rest;
-import co.istad.bmsapi.utils.DateTimeUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
