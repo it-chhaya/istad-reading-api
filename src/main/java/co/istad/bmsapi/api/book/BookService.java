@@ -2,10 +2,7 @@ package co.istad.bmsapi.api.book;
 
 import co.istad.bmsapi.api.book.web.BookDto;
 import co.istad.bmsapi.api.book.web.BookFilter;
-import co.istad.bmsapi.shared.paging.Paging;
 import com.github.pagehelper.PageInfo;
-
-import java.util.List;
 
 public interface BookService {
 

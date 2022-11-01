@@ -9,12 +9,12 @@ import co.istad.bmsapi.data.repository.UserRepository;
 @SpringBootTest
 class BmsapiApplicationTests {
 
-	@Autowired
-	UserRepository userRepository;
+	// @Autowired
+	// UserRepository userRepository;
 
-	@Test
-	void contextLoads() {
-		System.out.println(userRepository.selectByUsername("admin"));
-	}
+	// @Test
+	// void contextLoads() {
+	// 	System.out.println(userRepository.selectByUsername("admin"));
+	// }
 
 }

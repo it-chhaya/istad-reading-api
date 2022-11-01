@@ -3,8 +3,6 @@ package co.istad.bmsapi.api.book;
 import co.istad.bmsapi.api.book.web.BookDto;
 import co.istad.bmsapi.api.book.web.BookFilter;
 import co.istad.bmsapi.data.repository.BookRepository;
-import co.istad.bmsapi.shared.paging.Paging;
-import com.github.pagehelper.ISelect;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -14,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
