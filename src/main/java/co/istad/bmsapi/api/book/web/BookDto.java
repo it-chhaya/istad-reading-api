@@ -1,11 +1,18 @@
-package co.istad.bmsapi.api.book;
+package co.istad.bmsapi.api.book.web;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
+import java.awt.*;
 import java.time.LocalDate;
 
-@Data
-public class Book {
+@AllArgsConstructor
+@Builder
+@Getter
+@Setter
+public class BookDto {
 
     private Long id;
     private String title;
@@ -15,6 +22,5 @@ public class Book {
     private LocalDate datePublished;
     private Integer cover;
     private String pdf;
-    private Boolean isEnabled;
 
 }
