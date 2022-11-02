@@ -1,20 +1,22 @@
-package co.istad.bmsapi.api.file;
+package co.istad.bmsapi.api.file.web;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @Builder
-public class FileDto {
+public class FilePublicDto {
 
     private Long id;
     private String uuid;
-    private String extension;
-    private Double size;
-    private Boolean isEnabled;
+    private String name;
+    private String uri;
+
 
 }

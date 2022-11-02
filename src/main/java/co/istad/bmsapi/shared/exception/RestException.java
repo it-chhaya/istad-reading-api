@@ -9,6 +9,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.server.ResponseStatusException;
 
 import co.istad.bmsapi.shared.rest.ApiError;
@@ -43,6 +44,27 @@ public class RestException {
         return new ResponseEntity<>(rest, HttpStatus.BAD_REQUEST);
 
     }
+
+
+    @ExceptionHandler(value = MissingServletRequestPartException.class)
+    public ResponseEntity<?> handleMissingServletRequestPart(MissingServletRequestPartException e) {
+        
+        List<ApiError> apiErrors = new ArrayList<>();
+
+        ApiError apiError = new ApiError(e.getRequestPartName(), e.getMessage());
+        apiErrors.add(apiError);
+
+        RestError rest = new RestError();
+        rest.setStatus(false);
+        rest.setCode(HttpStatus.BAD_REQUEST.value());
+        rest.setMessage(HttpStatus.BAD_REQUEST.name());
+        rest.setTimestamp(DateTimeUtils.getTS());
+        rest.setErrors(apiErrors);
+
+        return new ResponseEntity<>(rest, HttpStatus.BAD_REQUEST);
+
+    }
+
 
 
     @ExceptionHandler(value = ResponseStatusException.class)
