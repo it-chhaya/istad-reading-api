@@ -33,6 +33,13 @@ public interface FileService {
     List<FileDto> getAllFiles();
 
 
+    /**
+     * Get a file from database by ID
+     * @param id is the unique identifier of file in database
+     * @return FileDto
+     */
+    FileDto getFileByID(Long id);
+
 
     /**
      * Get a file from database by UUID
@@ -48,5 +55,13 @@ public interface FileService {
      * @param uuid is the unique identifier of file in database
      */
     void deleteFileByUUID(String uuid);
+
+
+    /**
+     * Check file ID in database exist or not
+     * @param ID is the unique identifier of file in database
+     * @return true if exists and false if not exists
+     */
+    boolean existsFileID(Long id);
 
 }

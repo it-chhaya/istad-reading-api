@@ -12,57 +12,45 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.server.ResponseStatusException;
 
-import co.istad.bmsapi.shared.rest.ApiError;
-import co.istad.bmsapi.shared.rest.Rest;
+import co.istad.bmsapi.shared.rest.ValidatedError;
 import co.istad.bmsapi.shared.rest.RestError;
 import co.istad.bmsapi.utils.DateTimeUtils;
 
-import lombok.extern.slf4j.Slf4j;
-
 @RestControllerAdvice
-@Slf4j
 public class RestException {
     
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
     public ResponseEntity<?> handleValidation(MethodArgumentNotValidException e) {
-        log.info("Error Validation");
 
-        List<ApiError> apiErrors = new ArrayList<>();
+        List<ValidatedError> validatedErrors = new ArrayList<>();
         
         for (FieldError error : e.getFieldErrors()) {
-            ApiError apiError = new ApiError(error.getField(), error.getDefaultMessage());
-            apiErrors.add(apiError);
+            ValidatedError validatedError = new ValidatedError(error.getField(), error.getDefaultMessage());
+            validatedErrors.add(validatedError);
         }
 
-        RestError rest = new RestError();
+        var rest = new RestError<List<ValidatedError>>();
         rest.setStatus(false);
         rest.setCode(HttpStatus.BAD_REQUEST.value());
         rest.setMessage(HttpStatus.BAD_REQUEST.name());
         rest.setTimestamp(DateTimeUtils.getTS());
-        rest.setErrors(apiErrors);
+        rest.setError(validatedErrors);
 
         return new ResponseEntity<>(rest, HttpStatus.BAD_REQUEST);
-
     }
 
 
     @ExceptionHandler(value = MissingServletRequestPartException.class)
     public ResponseEntity<?> handleMissingServletRequestPart(MissingServletRequestPartException e) {
-        
-        List<ApiError> apiErrors = new ArrayList<>();
 
-        ApiError apiError = new ApiError(e.getRequestPartName(), e.getMessage());
-        apiErrors.add(apiError);
-
-        RestError rest = new RestError();
+        var rest = new RestError<String>();
         rest.setStatus(false);
-        rest.setCode(HttpStatus.BAD_REQUEST.value());
-        rest.setMessage(HttpStatus.BAD_REQUEST.name());
+        rest.setCode(HttpStatus.NOT_FOUND.value());
+        rest.setMessage(HttpStatus.NOT_FOUND.name());
         rest.setTimestamp(DateTimeUtils.getTS());
-        rest.setErrors(apiErrors);
+        rest.setError(e.getMessage());
 
-        return new ResponseEntity<>(rest, HttpStatus.BAD_REQUEST);
-
+        return new ResponseEntity<>(rest, HttpStatus.NOT_FOUND);
     }
 
 
@@ -70,11 +58,12 @@ public class RestException {
     @ExceptionHandler(value = ResponseStatusException.class)
     public ResponseEntity<?> handleResourceNotFound(ResponseStatusException e) {
 
-        Rest<String> rest = new Rest<>();
+        var rest = new RestError<String>();
         rest.setStatus(false);
-        rest.setCode(HttpStatus.NOT_FOUND.value());
+        rest.setCode(e.getStatus().value());
         rest.setMessage(e.getReason());
-        rest.setData("RESOURCE_NOT_FOUND");
+        rest.setTimestamp(DateTimeUtils.getTS());
+        rest.setError(e.getCause().getMessage());
 
         return new ResponseEntity<>(rest, HttpStatus.NOT_FOUND);
 

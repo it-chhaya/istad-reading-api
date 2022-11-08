@@ -2,6 +2,10 @@ package co.istad.bmsapi.api.book;
 
 import co.istad.bmsapi.api.book.web.BookDto;
 import co.istad.bmsapi.api.book.web.BookFilter;
+import co.istad.bmsapi.api.book.web.SavedBookDto;
+import co.istad.bmsapi.api.file.File;
+import co.istad.bmsapi.api.file.FileServiceImpl;
+import co.istad.bmsapi.api.file.web.FileDto;
 import co.istad.bmsapi.data.repository.BookRepository;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
@@ -12,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 @Service
@@ -21,6 +26,35 @@ public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
     private final BookMapper bookMapper;
+    private final FileServiceImpl fileServiceImpl;
+
+    @Override
+    public BookDto save(SavedBookDto savedBookDto) {
+
+        Book book = bookMapper.fromSavedBookDto(savedBookDto);
+        book.setCover(new File(savedBookDto.getFileId()));
+        book.setStarRating((short) 0);
+        book.setIsEnabled(savedBookDto.getIsPublished());
+        book.setDatePublished(savedBookDto.getIsPublished() ? LocalDate.now() : null);
+
+        try {
+            bookRepository.insert(book);
+        } catch (Exception e) {
+            log.error("Error = {}", e.getMessage());
+            String reason = "You cannot save the record.";
+            Throwable cause = new Throwable("Server went wrong, please contact developers or try again.");
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, reason, cause);
+        }
+
+        // go to file by ID
+        FileDto fileDto = fileServiceImpl.getFileByID(savedBookDto.getFileId());
+
+        BookDto bookDto = bookMapper.toBookDto(book);
+        bookDto.setCover(fileDto);
+
+        return bookDto;
+    }
+
 
     @Override
     public PageInfo<BookDto> getAllBooks(BookFilter bookFilter, int pageNum, int pageSize) {
@@ -45,9 +79,6 @@ public class BookServiceImpl implements BookService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, reason);
         }
 
-        BookDto bookDto = bookMapper.toBookDto(opBook.get());
-
-        return bookDto;
-
+        return bookMapper.toBookDto(opBook.get());
     }
 }

@@ -1,5 +1,6 @@
 package co.istad.bmsapi.api.book;
 
+import co.istad.bmsapi.api.file.File;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -13,7 +14,7 @@ public class Book {
     private String author;
     private Short starRating;
     private LocalDate datePublished;
-    private Integer cover;
+    private File cover;
     private String pdf;
     private Boolean isEnabled;
 

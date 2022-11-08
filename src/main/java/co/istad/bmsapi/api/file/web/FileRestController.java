@@ -35,7 +35,6 @@ public class FileRestController {
         rest.setData(fileService.uploadOne(file));
 
         return ResponseEntity.ok(rest);
-
     }
 
 
@@ -56,25 +55,49 @@ public class FileRestController {
         rest.setData(fileService.uploadAll(files));
 
         return ResponseEntity.ok(rest);
-
     }
 
 
     @GetMapping
     ResponseEntity<?> getAllFiles() {
-        return null;
+
+        Rest<List<FileDto>> rest = new Rest<>();
+        rest.setStatus(true);
+        rest.setCode(HttpStatus.OK.value());
+        rest.setMessage("Files have been found.");
+        rest.setData(fileService.getAllFiles());
+
+        return ResponseEntity.ok(rest);
     }
 
 
     @GetMapping("/{uuid}")
-    ResponseEntity<?> getFileByUUID() {
-        return null;
+    ResponseEntity<?> getFileByUUID(@PathVariable String uuid) {
+
+        FileDto fileDto = fileService.getFileByUUID(uuid);
+
+        var rest = new Rest<FileDto>();
+        rest.setStatus(true);
+        rest.setCode(HttpStatus.OK.value());
+        rest.setMessage("File has been found.");
+        rest.setData(fileDto);
+
+        return ResponseEntity.ok(rest);
     }
 
 
     @DeleteMapping("/{uuid}")
-    ResponseEntity<?> deleteFileByUUID() {
-        return null;
+    ResponseEntity<?> deleteFileByUUID(@PathVariable String uuid) {
+
+        fileService.deleteFileByUUID(uuid);
+
+        var rest = new Rest<String>();
+        rest.setStatus(true);
+        rest.setCode(HttpStatus.OK.value());
+        rest.setMessage("File has been deleted.");
+        rest.setData(uuid);
+
+        return ResponseEntity.ok(rest);
     }
 
 }

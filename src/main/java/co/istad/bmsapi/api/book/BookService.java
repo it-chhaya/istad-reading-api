@@ -2,9 +2,12 @@ package co.istad.bmsapi.api.book;
 
 import co.istad.bmsapi.api.book.web.BookDto;
 import co.istad.bmsapi.api.book.web.BookFilter;
+import co.istad.bmsapi.api.book.web.SavedBookDto;
 import com.github.pagehelper.PageInfo;
 
 public interface BookService {
+
+    BookDto save(SavedBookDto savedBookDto);
 
     /**
      * Get all books from database with pagination configuration

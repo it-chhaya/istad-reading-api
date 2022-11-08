@@ -1,17 +1,14 @@
 package co.istad.bmsapi.api.book.web;
 
-import co.istad.bmsapi.api.book.Book;
 import co.istad.bmsapi.api.book.BookServiceImpl;
-import co.istad.bmsapi.api.genre.web.GenreDto;
 import co.istad.bmsapi.shared.rest.Rest;
-import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/v1/books")
@@ -44,7 +41,7 @@ public class BookRestController {
         Rest<BookDto> rest = new Rest<>();
         rest.setStatus(true);
         rest.setCode(HttpStatus.OK.value());
-        rest.setMessage("Book has been fetched");
+        rest.setMessage("Book has been fetched.");
         rest.setData(bookService.getBookById(id));
 
         return ResponseEntity.ok(rest);
@@ -52,9 +49,18 @@ public class BookRestController {
     }
 
 
-//    @PostMapping
-//    ResponseEntity<?> postNewBook() {
-//
-//    }
+    @PostMapping
+    ResponseEntity<?> save(@Valid @RequestBody SavedBookDto savedBookDto) {
+
+        BookDto bookDto = bookService.save(savedBookDto);
+
+        var rest = new Rest<BookDto>();
+        rest.setStatus(true);
+        rest.setCode(HttpStatus.OK.value());
+        rest.setMessage("Book has been saved.");
+        rest.setData(bookDto);
+
+        return ResponseEntity.ok(rest);
+    }
 
 }

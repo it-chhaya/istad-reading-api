@@ -1,11 +1,11 @@
 package co.istad.bmsapi.api.book.web;
 
+import co.istad.bmsapi.api.file.web.FileDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.awt.*;
 import java.time.LocalDate;
 
 @AllArgsConstructor
@@ -20,7 +20,7 @@ public class BookDto {
     private String author;
     private Short starRating;
     private LocalDate datePublished;
-    private Integer cover;
+    private FileDto cover;
     private String pdf;
 
 }

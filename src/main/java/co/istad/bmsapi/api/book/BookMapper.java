@@ -2,6 +2,7 @@ package co.istad.bmsapi.api.book;
 
 import co.istad.bmsapi.api.book.web.BookDto;
 import co.istad.bmsapi.api.book.web.BookFilter;
+import co.istad.bmsapi.api.book.web.SavedBookDto;
 import com.github.pagehelper.PageInfo;
 import org.mapstruct.Mapper;
 
@@ -15,5 +16,7 @@ public interface BookMapper {
     Book fromBookDto(BookDto bookDto);
 
     BookDto toBookDto(Book book);
+
+    Book fromSavedBookDto(SavedBookDto savedBookDto);
 
 }

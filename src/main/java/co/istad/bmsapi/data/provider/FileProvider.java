@@ -14,4 +14,39 @@ public class FileProvider {
         }}.toString();
     }
 
+
+    public String buildSelectFileSql() {
+        return new SQL() {{
+            SELECT("*");
+            FROM("images");
+            WHERE("is_enabled = TRUE");
+        }}.toString();
+    }
+
+
+    public String buildSelectFileByIDSql() {
+        return new SQL() {{
+            SELECT("*");
+            FROM("images");
+            WHERE("id = #{id}", "is_enabled = TRUE");
+        }}.toString();
+    }
+
+
+    public String buildSelectFileByUUIDSql() {
+        return new SQL() {{
+            SELECT("*");
+            FROM("images");
+            WHERE("uuid = #{uuid}", "is_enabled = TRUE");
+        }}.toString();
+    }
+
+
+    public String buildDeleteByUUIDSql() {
+        return new SQL() {{
+            DELETE_FROM("images");
+            WHERE("uuid = #{uuid}");
+        }}.toString();
+    }
+
 }

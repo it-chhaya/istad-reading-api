@@ -13,6 +13,10 @@ import lombok.Setter;
 @Builder
 public class File {
 
+    public File(Long id) {
+        this.id = id;
+    }
+
     private Long id;
     private String uuid;
     private String extension;
