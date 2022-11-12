@@ -56,7 +56,7 @@ public class RestException {
 
 
     @ExceptionHandler(value = ResponseStatusException.class)
-    public ResponseEntity<?> handleResourceNotFound(ResponseStatusException e) {
+    public ResponseEntity<?> handleService(ResponseStatusException e) {
 
         var rest = new RestError<String>();
         rest.setStatus(false);

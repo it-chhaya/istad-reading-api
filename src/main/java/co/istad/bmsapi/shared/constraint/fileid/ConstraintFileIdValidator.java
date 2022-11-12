@@ -1,4 +1,4 @@
-package co.istad.bmsapi.shared.annotation.fileexist;
+package co.istad.bmsapi.shared.constraint.fileid;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

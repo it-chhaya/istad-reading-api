@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -35,10 +36,22 @@ public class BookServiceImpl implements BookService {
         book.setCover(new File(savedBookDto.getFileId()));
         book.setStarRating((short) 0);
         book.setIsEnabled(savedBookDto.getIsPublished());
-        book.setDatePublished(savedBookDto.getIsPublished() ? LocalDate.now() : null);
 
         try {
-            bookRepository.insert(book);
+            if (book.getId() == null) {
+                book.setDatePublished(savedBookDto.getIsPublished() ? LocalDate.now() : null);
+                bookRepository.insert(book);
+
+                // Define genre of book
+                savedBookDto.getGenreIds().forEach(genreId -> bookRepository.insertBookGenre(book.getId(), genreId));
+            } else {
+                bookRepository.update(book);
+
+                bookRepository.deleteBookGenresById(book.getId());
+
+                // Update genre of book
+                savedBookDto.getGenreIds().forEach(genreId -> bookRepository.insertBookGenre(book.getId(), genreId));
+            }
         } catch (Exception e) {
             log.error("Error = {}", e.getMessage());
             String reason = "You cannot save the record.";
@@ -81,4 +94,19 @@ public class BookServiceImpl implements BookService {
 
         return bookMapper.toBookDto(opBook.get());
     }
+
+
+    @Override
+    public void deleteBookById(Long id) {
+
+        if (bookRepository.existsById(id)) {
+            bookRepository.deleteById(id);
+        } else {
+            String reason = "Delete book operation is failed.";
+            Throwable cause = new Throwable("Book with ID = " + id + " is not found in DB.");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, reason, cause);
+        }
+
+    }
+
 }

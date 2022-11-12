@@ -49,9 +49,34 @@ public class BookRestController {
     }
 
 
+    @DeleteMapping("/{id}")
+    ResponseEntity<?> deleteBookById(@PathVariable Long id) {
+
+        bookService.deleteBookById(id);
+
+        var rest = new Rest<String>();
+        rest.setStatus(true);
+        rest.setCode(HttpStatus.OK.value());
+        rest.setMessage("Book has been deleted.");
+        rest.setData("DELETE_OPERATION");
+
+        return ResponseEntity.ok(rest);
+    }
+
+
     @PostMapping
     ResponseEntity<?> save(@Valid @RequestBody SavedBookDto savedBookDto) {
+        return ResponseEntity.ok(this.saveBook(savedBookDto));
+    }
 
+    @PutMapping("/{id}")
+    ResponseEntity<?> update(@Valid @RequestBody SavedBookDto savedBookDto, @PathVariable("id") Long id) {
+        savedBookDto.setId(id);
+        return ResponseEntity.ok(this.saveBook(savedBookDto));
+    }
+
+
+    private Rest<?> saveBook(SavedBookDto savedBookDto) {
         BookDto bookDto = bookService.save(savedBookDto);
 
         var rest = new Rest<BookDto>();
@@ -60,7 +85,7 @@ public class BookRestController {
         rest.setMessage("Book has been saved.");
         rest.setData(bookDto);
 
-        return ResponseEntity.ok(rest);
+        return rest;
     }
 
 }

@@ -42,4 +42,7 @@ public interface GenreRepository {
     @Select("SELECT EXISTS(SELECT * FROM genres WHERE id = #{id})")
     boolean checkWhereId(@Param("id") Integer id);
 
+
+    int countWhereInId(@Param("ids") List<Integer> ids);
+
 }

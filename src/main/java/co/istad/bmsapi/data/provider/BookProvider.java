@@ -16,7 +16,20 @@ public class BookProvider {
             VALUES("cover", "#{book.cover.id}");
             VALUES("pdf", "#{book.pdf}");
             VALUES("date_published", "#{book.datePublished}");
-            VALUES("is_enabled", "TRUE");
+            VALUES("is_enabled", "#{book.isEnabled}");
+        }}.toString();
+    }
+
+    public String buildUpdateSql() {
+        return new SQL() {{
+            UPDATE("books");
+            SET("title = #{book.title}");
+            SET("description = #{book.description}");
+            SET("author = #{book.author}");
+            SET("cover = #{book.cover.id}");
+            SET("pdf = #{book.pdf}");
+            SET("is_enabled = #{book.isEnabled}");
+            WHERE("id = #{book.id}");
         }}.toString();
     }
 
@@ -42,6 +55,25 @@ public class BookProvider {
             SELECT("*");
             FROM("books");
             WHERE("id = #{id}");
+        }}.toString();
+    }
+
+
+    public String buildInsertBookGenreSql() {
+        return new SQL() {{
+            INSERT_INTO("books_genres");
+            VALUES("book_id", "#{bookId}");
+            VALUES("genre_id", "#{genreId}");
+        }}.toString();
+    }
+
+
+    public String buildSelectBookGenresByIdSql() {
+        return new SQL() {{
+            SELECT("g.id, g.title, g.description, g.icon");
+            FROM("genres g");
+            INNER_JOIN("books_genres bg ON bg.genre_id = g.id");
+            WHERE("bg.book_id = #{bookId}");
         }}.toString();
     }
 

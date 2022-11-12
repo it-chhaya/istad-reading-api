@@ -20,9 +20,16 @@ public interface BookService {
 
     /**
      * Get book from database with the specified ID
-     * @param id is the identifier of bood
+     * @param id is the identifier of book
      * @return BookDto
      */
     BookDto getBookById(Long id);
+
+
+    /**
+     * Delete book from database with the specified ID
+     * @param id is the identifier of book
+     */
+    void deleteBookById(Long id);
 
 }
