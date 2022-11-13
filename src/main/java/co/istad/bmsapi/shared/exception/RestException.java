@@ -9,6 +9,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.server.ResponseStatusException;
 
 import co.istad.bmsapi.shared.rest.ApiError;
@@ -33,7 +34,7 @@ public class RestException {
             apiErrors.add(apiError);
         }
 
-        RestError rest = new RestError();
+        var rest = new RestError<List<ApiError>>();
         rest.setStatus(false);
         rest.setCode(HttpStatus.BAD_REQUEST.value());
         rest.setMessage(HttpStatus.BAD_REQUEST.name());
@@ -42,6 +43,20 @@ public class RestException {
 
         return new ResponseEntity<>(rest, HttpStatus.BAD_REQUEST);
 
+    }
+
+
+    @ExceptionHandler(value = MissingServletRequestPartException.class)
+    public ResponseEntity<?> handleMissingServletRequestPart(MissingServletRequestPartException e) {
+
+        var rest = new RestError<String>();
+        rest.setStatus(false);
+        rest.setCode(HttpStatus.NOT_FOUND.value());
+        rest.setMessage(HttpStatus.NOT_FOUND.name());
+        rest.setTimestamp(DateTimeUtils.getTS());
+        rest.setErrors(e.getMessage());
+
+        return new ResponseEntity<>(rest, HttpStatus.NOT_FOUND);
     }
 
 

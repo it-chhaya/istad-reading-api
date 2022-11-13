@@ -9,12 +9,12 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class RestError {
+public class RestError<T> {
 
     private Boolean status;
     private Integer code;
     private String message;
     private Timestamp timestamp;
-    private List<ApiError> errors;
+    private T errors;
 
 }
