@@ -46,6 +46,8 @@ public class BookProvider {
                 WHERE("star_rating = #{book.starRating}", "is_enabled = TRUE");
             }
 
+            ORDER_BY("id DESC");
+
         }}.toString();
     }
 

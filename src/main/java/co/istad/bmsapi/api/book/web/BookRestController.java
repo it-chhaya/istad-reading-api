@@ -49,16 +49,17 @@ public class BookRestController {
     }
 
 
+    @CrossOrigin
     @DeleteMapping("/{id}")
     ResponseEntity<?> deleteBookById(@PathVariable Long id) {
 
         bookService.deleteBookById(id);
 
-        var rest = new Rest<String>();
+        var rest = new Rest<Long>();
         rest.setStatus(true);
         rest.setCode(HttpStatus.OK.value());
         rest.setMessage("Book has been deleted.");
-        rest.setData("DELETE_OPERATION");
+        rest.setData(id);
 
         return ResponseEntity.ok(rest);
     }

@@ -40,7 +40,7 @@ public class SavedBookDto {
     @NotNull
     private Boolean isPublished;
 
-    @ConstraintGenreId
+    // @ConstraintGenreId
     @NotEmpty(message = "You must specify the genre id.")
     private List<Integer> genreIds;
 

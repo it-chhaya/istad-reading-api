@@ -6,6 +6,7 @@ import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,6 +20,7 @@ import co.istad.bmsapi.shared.rest.Rest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/api/v1/genres")
 @RequiredArgsConstructor
@@ -28,7 +30,7 @@ public class GenreRestController {
     private final GenreServiceImpl genreServiceImpl;
 
     @GetMapping
-    public ResponseEntity<?> getGenre() {
+    public ResponseEntity<?> getGenres() {
 
         List<GenreDto> genresDto = genreServiceImpl.findAllGenres();
 

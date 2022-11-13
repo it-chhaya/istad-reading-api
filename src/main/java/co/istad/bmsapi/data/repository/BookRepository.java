@@ -1,7 +1,6 @@
 package co.istad.bmsapi.data.repository;
 
 import co.istad.bmsapi.api.book.Book;
-import co.istad.bmsapi.api.book.BookGenre;
 import co.istad.bmsapi.api.genre.Genre;
 import co.istad.bmsapi.data.provider.BookProvider;
 import org.apache.ibatis.annotations.*;

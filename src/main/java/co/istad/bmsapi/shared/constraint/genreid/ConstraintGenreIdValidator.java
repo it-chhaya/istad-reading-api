@@ -14,7 +14,7 @@ public class ConstraintGenreIdValidator implements ConstraintValidator<Constrain
 
     @Override
     public boolean isValid(List<Integer> ids, ConstraintValidatorContext context) {
-        return false;
+        return true;
     }
 
 }
