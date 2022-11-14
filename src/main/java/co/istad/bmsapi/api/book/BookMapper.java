@@ -7,9 +7,12 @@ import org.mapstruct.Mapper;
 import com.github.pagehelper.PageInfo;
 
 import co.istad.bmsapi.api.book.web.BookDto;
+import co.istad.bmsapi.api.book.web.SavedBookDto;
 
 @Mapper(componentModel = "spring")
 public interface BookMapper {
+
+    Book toSavedModel(SavedBookDto savedBookDto);
 
     Book toModel(BookDto bookDto);
 

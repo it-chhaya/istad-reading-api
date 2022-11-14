@@ -27,4 +27,13 @@ public interface GenreService {
      */
     void deleteGenreById(Integer id);
 
+
+
+    /**
+     * Check ID of genre exist or not
+     * @param id
+     * @return
+     */
+    boolean existsById(Integer id);
+
 }

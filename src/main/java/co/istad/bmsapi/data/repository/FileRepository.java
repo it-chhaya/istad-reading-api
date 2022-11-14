@@ -3,6 +3,7 @@ package co.istad.bmsapi.data.repository;
 import org.apache.ibatis.annotations.InsertProvider;
 import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Select;
 
 import co.istad.bmsapi.api.file.File;
@@ -16,5 +17,9 @@ public interface FileRepository {
 
     @Select("SELECT EXISTS(SELECT * FROM images WHERE id = #{id})")
     boolean existsById(@Param("id") Long id);
+
+    @Select("SELECT * FROM images WHERE id = #{id}")
+    @Result(property = "isEnabled", column = "is_enabled")
+    File selectById(@Param("id") Long id);
 
 }

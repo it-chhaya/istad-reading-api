@@ -103,5 +103,18 @@ public class FileServiceImpl implements FileService {
     public boolean existsFileID(Long id) {
         return fileRepository.existsById(id);
     }
+
+
+    @Override
+    public FileDto getFileById(Long id) {
+
+        File file = fileRepository.selectById(id);
+
+        FileDto fileDto = fileMapper.fromModel(file);
+        fileDto.setName(file.getUuid() + "." + file.getExtension());
+        fileDto.setUri(uri + fileDto.getName());
+
+        return fileDto;
+    }
     
 }

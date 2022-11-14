@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @NoArgsConstructor
@@ -12,6 +13,10 @@ import lombok.Setter;
 @Setter
 @Builder
 public class File {
+
+    public File(Long id) {
+        this.id = id;
+    }
     
     private Long id;
     private String uuid;

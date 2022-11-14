@@ -45,6 +45,7 @@ public class SecurityConfig {
         // Start configuring
         http.csrf().disable()
                 .authorizeRequests()
+                .antMatchers("/files/**").permitAll()
                 .antMatchers("/api/v1/books/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/v1/genres/**").hasAnyRole("AUTHOR", "ADMIN")
                 .antMatchers("/api/v1/users/**").hasRole("ADMIN")

@@ -14,4 +14,6 @@ public interface FileService {
 
     boolean existsFileID(Long id);
 
+    FileDto getFileById(Long id);
+
 }

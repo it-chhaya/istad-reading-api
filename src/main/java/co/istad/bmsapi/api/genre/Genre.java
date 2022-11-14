@@ -10,6 +10,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class Genre {
+
+    public Genre(Integer id) {
+        this.id = id;
+    }
     
     private Integer id;
     private String title;

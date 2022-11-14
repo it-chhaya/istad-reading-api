@@ -62,7 +62,7 @@ public class GenreServiceImpl implements GenreService {
     @Override
     public void deleteGenreById(Integer id) {
 
-        boolean isFound = genreRepository.checkWhereId(id);
+        boolean isFound = genreRepository.existsById(id);
 
         if (!isFound) {
             String reason = "Genre with ID = " + id + " is not found in DB";
@@ -70,6 +70,12 @@ public class GenreServiceImpl implements GenreService {
         }
 
         genreRepository.deleteWhereId(id);
+    }
+
+
+    @Override
+    public boolean existsById(Integer id) {
+        return genreRepository.existsById(id);
     }
 
 }

@@ -40,6 +40,8 @@ public interface GenreRepository {
 
 
     @Select("SELECT EXISTS(SELECT * FROM genres WHERE id = #{id})")
-    boolean checkWhereId(@Param("id") Integer id);
+    boolean existsById(@Param("id") Integer id);
+
+
 
 }

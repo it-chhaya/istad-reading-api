@@ -6,17 +6,20 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import co.istad.bmsapi.shared.constraint.fileid.ConstraintFileId;
+import co.istad.bmsapi.shared.constraint.genreids.ConstraintGenreIds;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @Builder
+@ToString
 public class SavedBookDto {
     
     @NotBlank
@@ -31,11 +34,11 @@ public class SavedBookDto {
     private Boolean isPublic;
 
     @ConstraintFileId
-    private Long cover;
+    private Long fileId;
 
     private String pdf;
 
-    //@ConstraintGenreIds
-    private List<Integer> genres;
+    @ConstraintGenreIds
+    private List<Integer> genreIds;
 
 }
