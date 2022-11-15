@@ -8,4 +8,8 @@ public interface UserService {
     
     List<UserDto> getAllUsers();
 
+    boolean checkUserEmail(String email);
+
+    boolean checkUsername(String username);
+
 }

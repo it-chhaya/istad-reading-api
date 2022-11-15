@@ -20,5 +20,15 @@ public class UserServiceImpl implements UserService {
         List<User> users = userRepository.select();
         return userMapper.toListDto(users);
     }
-    
+
+    @Override
+    public boolean checkUserEmail(String email) {
+        return userRepository.existsWhereEmail(email);
+    }
+
+    @Override
+    public boolean checkUsername(String username) {
+        return userRepository.existsWhereUsername(username);
+    }
+
 }

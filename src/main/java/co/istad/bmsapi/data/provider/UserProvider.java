@@ -3,14 +3,50 @@ package co.istad.bmsapi.data.provider;
 import org.apache.ibatis.jdbc.SQL;
 
 public class UserProvider {
+
+    public String buildInsertUserRoleSql() {
+        return new SQL() {{
+            INSERT_INTO("users_roles");
+            VALUES("user_id", "#{userId}");
+            VALUES("role_id", "#{roleId}");
+        }}.toString();
+    }
+
+    public String buildInsertSql() {
+        return new SQL() {{
+            INSERT_INTO("users");
+            VALUES("username", "#{user.username}");
+            VALUES("email", "#{user.email}");
+            VALUES("family_name", "#{user.familyName}");
+            VALUES("given_name", "#{user.givenName}");
+            VALUES("phone_number", "#{user.phoneNumber}");
+            VALUES("profile", "#{user.profile.id}");
+            VALUES("biography", "#{user.biography}");
+            VALUES("is_enabled", "#{user.isEnabled}");
+            VALUES("password", "#{user.password}");
+        }}.toString();
+    }
     
-    public String buildSelectByUsernameSql() {
+    public String buildSelectByUsernameOrEmailSql() {
         return new SQL() {{
             SELECT("*");
             FROM("users");
-            WHERE("username = #{username}", "is_enabled = TRUE");
+            WHERE("username = #{usernameOrEmail}", "is_enabled = TRUE");
+            OR();
+            WHERE("email = #{usernameOrEmail}", "is_enabled = TRUE");
         }}.toString();
     }
+
+
+    public String buildSelectUserProfileSql() {
+        return new SQL() {{
+            SELECT("i.id, i.uuid, i.extension, i.size, i.is_enabled");
+            FROM("images AS i");
+            INNER_JOIN("users AS u ON u.profile = i.id");
+            WHERE("u.id = #{id}");
+        }}.toString();
+    }
+
 
     public String buildSelectUserRolesSql() {
         return new SQL() {{

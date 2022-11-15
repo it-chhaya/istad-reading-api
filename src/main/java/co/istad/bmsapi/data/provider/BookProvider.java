@@ -6,6 +6,29 @@ import org.apache.ibatis.jdbc.SQL;
 
 public class BookProvider {
 
+
+    public String buildUpdateCoverByIdSql() {
+        return new SQL() {
+            {
+                UPDATE("books");
+                SET("cover = #{coverId}");
+                WHERE("id = #{id}");
+            }
+        }.toString();
+    }
+
+
+    public String buildUpdateStarRatingSql() {
+        return new SQL() {
+            {
+                UPDATE("books");
+                SET("star_rating = #{starRating}");
+                WHERE("id = #{id}");
+            }
+        }.toString();
+    }
+
+
     public String buildInsertSql(@Param("book")Book book) {
         return new SQL() {{
             INSERT_INTO("books");
@@ -76,6 +99,15 @@ public class BookProvider {
             FROM("genres g");
             INNER_JOIN("books_genres bg ON bg.genre_id = g.id");
             WHERE("bg.book_id = #{bookId}");
+        }}.toString();
+    }
+
+
+    public String buildSelectBookCoverSql() {
+        return new SQL() {{
+            SELECT("i.id, i.uuid, i.extension, i.size, i.is_enabled");
+            FROM("images AS i");
+            WHERE("i.id = #{id}");
         }}.toString();
     }
 

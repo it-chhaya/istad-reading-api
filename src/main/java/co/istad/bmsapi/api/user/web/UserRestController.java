@@ -30,10 +30,7 @@ public class UserRestController {
         rest.setMessage("Users have been fetched");
         rest.setData(userDtoList);
 
-        System.out.println("hello");
-
         return ResponseEntity.ok(rest);
-
     }
 
 }

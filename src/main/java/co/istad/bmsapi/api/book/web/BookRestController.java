@@ -16,8 +16,38 @@ import javax.validation.Valid;
 public class BookRestController {
 
     private final BookServiceImpl bookService;
-    
-    @GetMapping
+
+
+    @PutMapping("/{id}/cover")
+    ResponseEntity<?> changeCover(@PathVariable("id") Long id, @Valid @RequestBody CoverDto coverDto) {
+
+        String uri = bookService.changeCoverById(id, coverDto);
+
+        var rest = new Rest<String>();
+        rest.setStatus(true);
+        rest.setCode(HttpStatus.OK.value());
+        rest.setMessage("Book cover has been changed.");
+        rest.setData(uri);
+
+        return ResponseEntity.ok(rest);
+    }
+
+    @PutMapping("/{id}/star-rating")
+    ResponseEntity<?> rateStar(@PathVariable("id") Long id, @Valid @RequestBody StarRatingDto body) {
+
+        BookDto bookDto = bookService.rateStarById(id, body);
+
+        var rest = new Rest<BookDto>();
+        rest.setStatus(true);
+        rest.setCode(HttpStatus.OK.value());
+        rest.setMessage("Book has been rated.");
+        rest.setData(bookDto);
+
+        return ResponseEntity.ok(rest);
+    }
+
+
+    @PostMapping("/fetch")
     ResponseEntity<?> getBooks(@RequestBody(required = false) BookFilter bookFilter,
                                @RequestParam(required = false, defaultValue = "1") int pageNum,
                                @RequestParam(required = false, defaultValue = "20") int pageSize) {
@@ -31,7 +61,6 @@ public class BookRestController {
         rest.setData(bookDtoList);
 
         return ResponseEntity.ok(rest);
-
     }
 
 
@@ -45,11 +74,9 @@ public class BookRestController {
         rest.setData(bookService.getBookById(id));
 
         return ResponseEntity.ok(rest);
-
     }
 
 
-    @CrossOrigin
     @DeleteMapping("/{id}")
     ResponseEntity<?> deleteBookById(@PathVariable Long id) {
 
@@ -70,6 +97,7 @@ public class BookRestController {
         return ResponseEntity.ok(this.saveBook(savedBookDto));
     }
 
+
     @PutMapping("/{id}")
     ResponseEntity<?> update(@Valid @RequestBody SavedBookDto savedBookDto, @PathVariable("id") Long id) {
         savedBookDto.setId(id);
@@ -78,6 +106,7 @@ public class BookRestController {
 
 
     private Rest<?> saveBook(SavedBookDto savedBookDto) {
+
         BookDto bookDto = bookService.save(savedBookDto);
 
         var rest = new Rest<BookDto>();

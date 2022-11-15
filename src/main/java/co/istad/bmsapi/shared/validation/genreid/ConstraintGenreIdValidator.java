@@ -1,4 +1,4 @@
-package co.istad.bmsapi.shared.constraint.genreid;
+package co.istad.bmsapi.shared.validation.genreid;
 
 import co.istad.bmsapi.data.repository.GenreRepository;
 import lombok.RequiredArgsConstructor;

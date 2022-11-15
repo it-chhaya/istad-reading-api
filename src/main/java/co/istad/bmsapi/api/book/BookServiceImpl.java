@@ -1,8 +1,6 @@
 package co.istad.bmsapi.api.book;
 
-import co.istad.bmsapi.api.book.web.BookDto;
-import co.istad.bmsapi.api.book.web.BookFilter;
-import co.istad.bmsapi.api.book.web.SavedBookDto;
+import co.istad.bmsapi.api.book.web.*;
 import co.istad.bmsapi.api.file.File;
 import co.istad.bmsapi.api.file.FileServiceImpl;
 import co.istad.bmsapi.api.file.web.FileDto;
@@ -12,6 +10,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -28,6 +27,38 @@ public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
     private final BookMapper bookMapper;
     private final FileServiceImpl fileServiceImpl;
+
+    @Value("${file.uri}")
+    private String baseUri;
+
+
+    @Override
+    public String changeCoverById(Long id, CoverDto coverDto) {
+
+        if (bookRepository.existsById(id)) {
+            bookRepository.updateCoverWhereId(id, coverDto.getCoverId());
+        } else {
+            String reason = "Updating book cover is failed, please try again.";
+            Throwable cause = new Throwable(String.format("Book ID = %s is not found in database.", id));
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, reason, cause);
+        }
+
+        return fileServiceImpl.getFileByID(coverDto.getCoverId()).getUri();
+    }
+
+    @Override
+    public BookDto rateStarById(Long id, StarRatingDto starRatingDto) {
+
+        if (bookRepository.existsById(id)) {
+            bookRepository.updateStarRating(id, starRatingDto.getStarRating());
+        } else {
+            String reason = "Rating star operation is failed, please try again.";
+            Throwable cause = new Throwable(String.format("Book ID = %s is not found in database.", id));
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, reason, cause);
+        }
+
+        return this.getBookById(id);
+    }
 
     @Override
     public BookDto save(SavedBookDto savedBookDto) {
@@ -77,7 +108,16 @@ public class BookServiceImpl implements BookService {
         Page<Book> bookList = PageHelper.startPage(pageNum, pageSize).doSelectPage(() -> bookRepository.select(book));
         PageInfo<Book> bookListPageInfo = new PageInfo<>(bookList);
 
-        return bookMapper.toBookDtoList(bookListPageInfo);
+        PageInfo<BookDto> bookDtoListPageInfo = bookMapper.toBookDtoList(bookListPageInfo);
+
+        for (BookDto bookDto : bookDtoListPageInfo.getList()) {
+            String fileName = bookDto.getCover().getUuid() + "." + bookDto.getCover().getExtension();
+            String fileUri = baseUri + fileName;
+            bookDto.getCover().setName(fileName);
+            bookDto.getCover().setUri(fileUri);
+        }
+
+        return bookDtoListPageInfo;
 
     }
 
@@ -92,7 +132,10 @@ public class BookServiceImpl implements BookService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, reason);
         }
 
-        return bookMapper.toBookDto(opBook.get());
+        BookDto bookDto = bookMapper.toBookDto(opBook.get());
+        bookDto.getCover().buildNameAndUri(baseUri);
+
+        return bookDto;
     }
 
 

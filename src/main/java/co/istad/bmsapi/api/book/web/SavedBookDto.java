@@ -1,6 +1,5 @@
 package co.istad.bmsapi.api.book.web;
 
-import co.istad.bmsapi.shared.constraint.genreid.ConstraintGenreId;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,7 +10,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
-import co.istad.bmsapi.shared.constraint.fileid.ConstraintFileId;
+import co.istad.bmsapi.shared.validation.fileid.ConstraintFileId;
 
 import java.util.List;
 

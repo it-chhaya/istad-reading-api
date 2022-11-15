@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -18,6 +20,35 @@ import co.istad.bmsapi.utils.DateTimeUtils;
 
 @RestControllerAdvice
 public class RestException {
+
+    @ExceptionHandler(value = RuntimeException.class)
+    public ResponseEntity<?> handleAccessDenied(AccessDeniedException e) {
+
+        System.out.println("access failed");
+        var rest = new RestError<String>();
+        rest.setStatus(false);
+        rest.setCode(HttpStatus.FORBIDDEN.value());
+        rest.setMessage("You cannot access this resources!");
+        rest.setTimestamp(DateTimeUtils.getTS());
+        rest.setError(e.getMessage());
+
+        return new ResponseEntity<>(rest, HttpStatus.FORBIDDEN);
+
+    }
+
+    @ExceptionHandler(value = BadCredentialsException.class)
+    public ResponseEntity<?> handleBadCredentials(BadCredentialsException e) {
+
+        var rest = new RestError<String>();
+        rest.setStatus(false);
+        rest.setCode(HttpStatus.UNAUTHORIZED.value());
+        rest.setMessage("Log in failed!");
+        rest.setTimestamp(DateTimeUtils.getTS());
+        rest.setError(e.getMessage());
+
+        return new ResponseEntity<>(rest, HttpStatus.UNAUTHORIZED);
+
+    }
     
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
     public ResponseEntity<?> handleValidation(MethodArgumentNotValidException e) {

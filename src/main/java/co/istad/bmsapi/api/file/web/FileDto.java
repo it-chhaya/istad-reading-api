@@ -19,6 +19,11 @@ public class FileDto {
     private String uri;
     private String extension;
     private Long size;
-    private Boolean isEnabled;
+    //private Boolean isEnabled;
+
+    public void buildNameAndUri(String baseUri) {
+        name = String.format("%s.%s", uuid, extension);
+        uri = baseUri + name;
+    }
 
 }
