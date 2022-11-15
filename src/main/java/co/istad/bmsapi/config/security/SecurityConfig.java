@@ -52,19 +52,17 @@ public class SecurityConfig {
         // Start configuring
         http
                 .csrf().disable()
-                .authorizeRequests()
-                // .antMatchers("/api/v1/books/**").permitAll()
-                // .antMatchers(HttpMethod.POST, "/api/v1/genres/**").hasAnyRole("AUTHOR", "ADMIN")
-                .antMatchers(
-                        "/v2/api-docs",
-                        "/swagger-resources",
-                        "/swagger-resources/configuration/ui",
-                        "/swagger-resources/configuration/security")
-                .permitAll()
-                .antMatchers("/api/v1/auth/**").permitAll()
-                .antMatchers("/api/v1/users/**").hasAnyRole("ADMIN")
-                .anyRequest().authenticated()
-                .and()
+                .requestMatchers((matchers) -> matchers.antMatchers("/files/**"))
+                .authorizeHttpRequests(authorize -> authorize.anyRequest().authenticated())
+//                .antMatchers(
+//                        "/v2/api-docs",
+//                        "/swagger-resources",
+//                        "/swagger-resources/configuration/ui",
+//                        "/swagger-resources/configuration/security").permitAll()
+//                .antMatchers("/api/v1/auth/**").permitAll()
+//                .antMatchers("/api/v1/users/**").hasAnyRole("ADMIN")
+//                .anyRequest().authenticated()
+//                .and()
                 .httpBasic()
                 .and()
                 .exceptionHandling()
@@ -80,10 +78,10 @@ public class SecurityConfig {
         return http.build();
     }
 
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return web -> web.ignoring().antMatchers("/files/**", "/js/**", "/swagger-ui/**");
-    }
+//    @Bean
+//    public WebSecurityCustomizer webSecurityCustomizer() {
+//        return web -> web.ignoring().antMatchers("/files/**", "/js/**", "/swagger-ui/**");
+//    }
 
 
 }
