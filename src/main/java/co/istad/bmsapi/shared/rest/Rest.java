@@ -30,4 +30,13 @@ public class Rest<T> {
         return rest;
     }
 
+    public static <T> Rest<T> forbidden() {
+        Rest<T> rest = new Rest<>();
+        rest.setData(null);
+        rest.setMessage("Forbidden Access Denied");
+        rest.setStatus(false);
+        rest.setCode(HttpStatus.FORBIDDEN.value());
+        return rest;
+    }
+
 }

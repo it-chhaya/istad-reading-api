@@ -10,6 +10,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.server.ResponseStatusException;
@@ -22,7 +23,7 @@ import co.istad.bmsapi.utils.DateTimeUtils;
 public class RestException {
 
     @ExceptionHandler(value = RuntimeException.class)
-    public ResponseEntity<?> handleAccessDenied(AccessDeniedException e) {
+    public ResponseEntity<?> handleAccessDenied(RuntimeException e) {
 
         System.out.println("access failed");
         var rest = new RestError<String>();

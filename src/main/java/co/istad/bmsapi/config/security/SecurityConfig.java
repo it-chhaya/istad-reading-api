@@ -26,17 +26,13 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 public class SecurityConfig {
 
     private final MyBasicAuthenticationEntryPoint authenticationEntryPoint;
+    private final CustomAccessDeniedHandler accessDeniedHandler;
 
     private final UserDetailsServiceImpl userDetailsService;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    public AccessDeniedHandler accessDeniedHandler() {
-        return new CustomAccessDeniedHandler();
     }
 
     @Bean
@@ -72,14 +68,14 @@ public class SecurityConfig {
                 .httpBasic()
                 .and()
                 .exceptionHandling()
-                .accessDeniedHandler(accessDeniedHandler())
+                .accessDeniedHandler(accessDeniedHandler)
                 .authenticationEntryPoint(authenticationEntryPoint)
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         http.authenticationProvider(authenticationProvider());
-        //http.addFilterAfter(new CustomFilter(), BasicAuthenticationFilter.class);
+        http.addFilterAfter(new CustomFilter(), BasicAuthenticationFilter.class);
 
         return http.build();
     }
