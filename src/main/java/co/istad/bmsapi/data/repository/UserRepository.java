@@ -14,6 +14,9 @@ import co.istad.bmsapi.data.provider.UserProvider;
 @Repository
 public interface UserRepository {
 
+    @UpdateProvider(type = UserProvider.class, method = "buildUpdatePasswordWhereIdSql")
+    void updatePasswordWhereId(@Param("id") Long id, @Param("encodedPassword") String encodedPassword);
+
     @InsertProvider(type = UserProvider.class, method = "buildInsertUserRoleSql")
     void insertUserRole(@Param("userId") Long userId, @Param("roleId") Integer roleId);
 

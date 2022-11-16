@@ -1,6 +1,7 @@
 package co.istad.bmsapi.api.auth;
 
 import co.istad.bmsapi.api.auth.web.AuthDto;
+import co.istad.bmsapi.api.auth.web.ChangePasswordDto;
 import co.istad.bmsapi.api.auth.web.LogInDto;
 import co.istad.bmsapi.api.auth.web.RegisterDto;
 import co.istad.bmsapi.api.user.web.UserDto;
@@ -22,5 +23,14 @@ public interface AuthService {
      * @return AuthDto
      */
     AuthDto register(RegisterDto registerDto);
+
+
+
+    /**
+     * Change password of user
+     * @param id is the identifier of user
+     * @param changePasswordDto contains required credentials
+     */
+    void changePassword(Long id, ChangePasswordDto changePasswordDto);
 
 }

@@ -8,6 +8,7 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
@@ -22,6 +23,7 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 @Configuration
+@EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
@@ -52,17 +54,18 @@ public class SecurityConfig {
         // Start configuring
         http
                 .csrf().disable()
-                .requestMatchers((matchers) -> matchers.antMatchers("/files/**"))
-                .authorizeHttpRequests(authorize -> authorize.anyRequest().authenticated())
-//                .antMatchers(
-//                        "/v2/api-docs",
-//                        "/swagger-resources",
-//                        "/swagger-resources/configuration/ui",
-//                        "/swagger-resources/configuration/security").permitAll()
-//                .antMatchers("/api/v1/auth/**").permitAll()
-//                .antMatchers("/api/v1/users/**").hasAnyRole("ADMIN")
-//                .anyRequest().authenticated()
-//                .and()
+                .authorizeRequests()
+                .antMatchers(
+                        "/files/**",
+                        "/swagger-ui/**",
+                        "/v2/api-docs",
+                        "/swagger-resources",
+                        "/swagger-resources/configuration/ui",
+                        "/swagger-resources/configuration/security").permitAll()
+                .antMatchers("/api/v1/auth/**").permitAll()
+                .antMatchers("/api/v1/users/**").hasAnyRole("ADMIN")
+                .anyRequest().authenticated()
+                .and()
                 .httpBasic()
                 .and()
                 .exceptionHandling()
@@ -77,11 +80,6 @@ public class SecurityConfig {
 
         return http.build();
     }
-
-//    @Bean
-//    public WebSecurityCustomizer webSecurityCustomizer() {
-//        return web -> web.ignoring().antMatchers("/files/**", "/js/**", "/swagger-ui/**");
-//    }
 
 
 }

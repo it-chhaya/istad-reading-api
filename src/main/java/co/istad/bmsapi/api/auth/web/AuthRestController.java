@@ -50,4 +50,18 @@ public class AuthRestController {
         return ResponseEntity.ok(rest);
     }
 
+
+    @PutMapping("/{id}/change-password")
+    ResponseEntity<?> changePassword(@PathVariable("id") Long id, @Valid @RequestBody ChangePasswordDto changePasswordDto) {
+
+        authService.changePassword(id, changePasswordDto);
+
+        Rest<Object> rest = Rest.ok()
+                .setData("Password has been changed successfully.")
+                .setMessage("Operation is successfully.");
+
+        return ResponseEntity.ok(rest);
+    }
+
+
 }

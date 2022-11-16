@@ -1,6 +1,7 @@
 package co.istad.bmsapi.api.auth;
 
 import co.istad.bmsapi.api.auth.web.AuthDto;
+import co.istad.bmsapi.api.auth.web.ChangePasswordDto;
 import co.istad.bmsapi.api.auth.web.LogInDto;
 import co.istad.bmsapi.api.auth.web.RegisterDto;
 import co.istad.bmsapi.api.file.File;
@@ -13,12 +14,14 @@ import co.istad.bmsapi.config.security.UserDetailsServiceImpl;
 import co.istad.bmsapi.data.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.Base64;
@@ -38,6 +41,18 @@ public class AuthServiceImpl implements AuthService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final UserMapper userMapper;
     private final AuthMapper authMapper;
+
+    @Override
+    public void changePassword(Long id, ChangePasswordDto changePasswordDto) {
+        try {
+            String encodedPassword = bCryptPasswordEncoder.encode(changePasswordDto.getPassword());
+            userRepository.updatePasswordWhereId(id, encodedPassword);
+        } catch (Exception e) {
+            String reason = "Change password is failed!";
+            Throwable cause = new Throwable("Internal server error, please contact the developer!");
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, reason, cause);
+        }
+    }
 
     @Override
     public AuthDto logIn(LogInDto logInDto) {

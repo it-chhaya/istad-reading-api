@@ -4,6 +4,14 @@ import org.apache.ibatis.jdbc.SQL;
 
 public class UserProvider {
 
+    public String buildUpdatePasswordWhereIdSql() {
+        return new SQL() {{
+            UPDATE("users");
+            SET("password = #{encodedPassword}");
+            WHERE("id = #{id}");
+        }}.toString();
+    }
+
     public String buildInsertUserRoleSql() {
         return new SQL() {{
             INSERT_INTO("users_roles");
