@@ -10,8 +10,6 @@ import co.istad.bmsapi.data.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.function.Supplier;
-
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -22,7 +20,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        User user = userRepository.selectByUsernameOrEmail(username).orElseThrow(() -> new UsernameNotFoundException("User is not found!"));
+        User user = userRepository.selectWhereUsernameOrEmail(username, true).orElseThrow(() -> new UsernameNotFoundException("User is not found!"));
 
         CustomUserSecurity userSecurity = new CustomUserSecurity();
         userSecurity.setUser(user);

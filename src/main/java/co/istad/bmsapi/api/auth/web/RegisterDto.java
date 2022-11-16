@@ -12,14 +12,13 @@ import lombok.Setter;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 import java.util.List;
 
 @AllArgsConstructor
 @Builder
 @Getter
 @Setter
-@PasswordMatch(password = "password", confirmedPassword = "confirmedPassword")
+@PasswordMatch(password = "templates/password", confirmedPassword = "confirmedPassword")
 public class RegisterDto {
 
     @ConstraintUsername

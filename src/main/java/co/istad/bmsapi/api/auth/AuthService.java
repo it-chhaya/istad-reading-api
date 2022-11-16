@@ -6,6 +6,9 @@ import co.istad.bmsapi.api.auth.web.LogInDto;
 import co.istad.bmsapi.api.auth.web.RegisterDto;
 import co.istad.bmsapi.api.user.web.UserDto;
 
+import javax.mail.MessagingException;
+import java.io.UnsupportedEncodingException;
+
 public interface AuthService {
 
     /**
@@ -32,5 +35,11 @@ public interface AuthService {
      * @param changePasswordDto contains required credentials
      */
     void changePassword(Long id, ChangePasswordDto changePasswordDto);
+
+
+    void sendEmailConfirmation(String email) throws MessagingException, UnsupportedEncodingException;
+
+
+    void verifyEmail(String email, String verificationCode);
 
 }

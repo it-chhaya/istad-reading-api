@@ -29,6 +29,7 @@ public class User {
     private File profile;
     private String biography;
     private Boolean isEnabled;
+    private String verificationCode;
 
     private List<Role> roles;
 

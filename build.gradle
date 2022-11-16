@@ -28,6 +28,10 @@ ext {
 
 dependencies {
 
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+
     implementation 'org.passay:passay:1.6.2'
 
     implementation 'com.github.pagehelper:pagehelper-spring-boot-starter:1.4.5'

@@ -24,14 +24,14 @@ public class UserProvider {
         return new SQL() {{
             INSERT_INTO("users");
             VALUES("username", "#{user.username}");
-            VALUES("email", "#{user.email}");
+            VALUES("templates/email", "#{user.email}");
             VALUES("family_name", "#{user.familyName}");
             VALUES("given_name", "#{user.givenName}");
             VALUES("phone_number", "#{user.phoneNumber}");
             VALUES("profile", "#{user.profile.id}");
             VALUES("biography", "#{user.biography}");
             VALUES("is_enabled", "#{user.isEnabled}");
-            VALUES("password", "#{user.password}");
+            VALUES("templates/password", "#{user.password}");
         }}.toString();
     }
     
@@ -39,9 +39,9 @@ public class UserProvider {
         return new SQL() {{
             SELECT("*");
             FROM("users");
-            WHERE("username = #{usernameOrEmail}", "is_enabled = TRUE");
+            WHERE("username = #{usernameOrEmail}", "is_enabled = #{isEnabled}");
             OR();
-            WHERE("email = #{usernameOrEmail}", "is_enabled = TRUE");
+            WHERE("email = #{usernameOrEmail}", "is_enabled = #{isEnabled}");
         }}.toString();
     }
 

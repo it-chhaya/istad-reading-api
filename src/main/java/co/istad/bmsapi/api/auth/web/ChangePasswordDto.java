@@ -11,7 +11,7 @@ import javax.validation.constraints.NotBlank;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@PasswordMatch(password = "password", confirmedPassword = "confirmedPassword")
+@PasswordMatch(password = "templates/password", confirmedPassword = "confirmedPassword")
 public class ChangePasswordDto {
 
     @Password
