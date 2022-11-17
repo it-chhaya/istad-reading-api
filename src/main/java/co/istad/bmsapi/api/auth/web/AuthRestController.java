@@ -1,10 +1,12 @@
 package co.istad.bmsapi.api.auth.web;
 
 import co.istad.bmsapi.api.auth.AuthServiceImpl;
+import co.istad.bmsapi.api.user.web.UserDto;
 import co.istad.bmsapi.config.security.UserDetailsServiceImpl;
 import co.istad.bmsapi.shared.rest.Rest;
 import co.istad.bmsapi.utils.DateTimeUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,9 +17,13 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.mail.MessagingException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 
@@ -28,14 +34,23 @@ public class AuthRestController {
 
     private final AuthServiceImpl authService;
 
+    @Value("${app.base-url}")
+    private String appBaseUrl;
+
+
+    @PostMapping("/change-profile")
+    ResponseEntity<?> changeProfile() {
+        return ResponseEntity.ok(null);
+    }
+
 
     @PostMapping("/register")
     ResponseEntity<?> register(@Valid @RequestBody RegisterDto registerDto) {
 
-        AuthDto authDto = authService.register(registerDto);
+        UserDto userDto = authService.register(registerDto);
 
         Rest<Object> rest = Rest.ok()
-                .setData(authDto)
+                .setData(userDto)
                 .setMessage("You have registered successfully.");
 
         return ResponseEntity.ok(rest);
@@ -88,21 +103,12 @@ public class AuthRestController {
 
 
     @GetMapping("verify-email")
-    ResponseEntity<?> verifyEmail(@RequestParam("email") String email,
-                                  @RequestParam("verificationCode") String verificationCode) {
-
-        System.out.println("email = " + email);
-        System.out.println("verificationCode = " + verificationCode);
+    String verifyEmail(@RequestParam("email") String email,
+                             @RequestParam("verificationCode") String verificationCode) {
 
         authService.verifyEmail(email, verificationCode);
 
-        var rest = new HashMap<String, Object>();
-        rest.put("status", true);
-        rest.put("code", HttpStatus.OK.value());
-        rest.put("message", "Email has been verified successfully.");
-        rest.put("timestamp", DateTimeUtils.getTS());
-
-        return ResponseEntity.ok(rest);
+        return "Your email has been verified..!";
     }
 
 

@@ -1,5 +1,6 @@
 package co.istad.bmsapi.api.genre;
 
+import co.istad.bmsapi.api.file.File;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,7 +18,7 @@ public class Genre {
     private Integer id;
     private String title;
     private String description;
-    private Integer icon;
+    private File icon;
     private Boolean isEnabled;
 
 }

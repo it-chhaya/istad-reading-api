@@ -24,14 +24,14 @@ public class UserProvider {
         return new SQL() {{
             INSERT_INTO("users");
             VALUES("username", "#{user.username}");
-            VALUES("templates/email", "#{user.email}");
+            VALUES("email", "#{user.email}");
             VALUES("family_name", "#{user.familyName}");
             VALUES("given_name", "#{user.givenName}");
             VALUES("phone_number", "#{user.phoneNumber}");
             VALUES("profile", "#{user.profile.id}");
             VALUES("biography", "#{user.biography}");
             VALUES("is_enabled", "#{user.isEnabled}");
-            VALUES("templates/password", "#{user.password}");
+            VALUES("password", "#{user.password}");
         }}.toString();
     }
     

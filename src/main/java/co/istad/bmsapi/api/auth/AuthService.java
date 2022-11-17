@@ -23,9 +23,9 @@ public interface AuthService {
     /**
      * Register new user into database
      * @param registerDto contains required and optional information for register process
-     * @return AuthDto
+     * @return UserDto
      */
-    AuthDto register(RegisterDto registerDto);
+    UserDto register(RegisterDto registerDto);
 
 
 

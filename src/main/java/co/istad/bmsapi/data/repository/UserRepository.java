@@ -39,12 +39,12 @@ public interface UserRepository {
     void insert(@Param("user") User user);
 
     @Select("SELECT EXISTS(SELECT * FROM users WHERE email = #{email})")
-    boolean existsWhereEmail(@Param("templates/email") String email);
+    boolean existsWhereEmail(@Param("email") String email);
 
     @Select("SELECT EXISTS(SELECT * FROM users WHERE username = #{username})")
     boolean existsWhereUsername(@Param("username") String username);
 
-    @Select("SELECT * FROM users WHERE is_enabled = TRUE")
+    @Select("SELECT * FROM users WHERE is_enabled = TRUE ORDER BY id DESC")
     @ResultMap("userResultMap")
     List<User> select();
 
@@ -66,7 +66,7 @@ public interface UserRepository {
 
     @SelectProvider(type = UserProvider.class, method = "buildSelectUserProfileSql")
     @Result(column = "is_enabled", property = "isEnabled")
-    File selectUserProfile(@Param("id") Integer id);
+    File selectUserProfile(@Param("id") Long id);
 
     @SelectProvider(type = UserProvider.class, method = "buildSelectUserRolesSql")
     List<Role> selectUserRoles(@Param("id") Integer id);

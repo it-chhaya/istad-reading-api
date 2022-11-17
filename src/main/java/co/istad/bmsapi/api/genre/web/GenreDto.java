@@ -1,5 +1,6 @@
 package co.istad.bmsapi.api.genre.web;
 
+import co.istad.bmsapi.api.file.web.FileDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,5 +17,6 @@ public class GenreDto {
     private Integer id;
     private String title;
     private String description;
+    private FileDto icon;
 
 }

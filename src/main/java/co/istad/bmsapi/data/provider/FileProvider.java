@@ -20,6 +20,7 @@ public class FileProvider {
             SELECT("*");
             FROM("images");
             WHERE("is_enabled = TRUE");
+            ORDER_BY("id DESC");
         }}.toString();
     }
 

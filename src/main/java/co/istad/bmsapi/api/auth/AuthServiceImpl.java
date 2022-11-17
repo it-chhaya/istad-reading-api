@@ -7,6 +7,7 @@ import co.istad.bmsapi.api.auth.web.RegisterDto;
 import co.istad.bmsapi.api.email.EmailServiceImpl;
 import co.istad.bmsapi.api.email.Mail;
 import co.istad.bmsapi.api.file.File;
+import co.istad.bmsapi.api.file.FileServiceImpl;
 import co.istad.bmsapi.api.user.User;
 import co.istad.bmsapi.api.user.UserMapper;
 import co.istad.bmsapi.api.user.web.UserDto;
@@ -32,6 +33,7 @@ import java.util.*;
 public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
+    private final FileServiceImpl fileService;
     private final EmailServiceImpl emailService;
 
     @Value("${file.uri}")
@@ -76,12 +78,12 @@ public class AuthServiceImpl implements AuthService {
 
 
     @Override
-    public AuthDto register(RegisterDto registerDto) {
+    public UserDto register(RegisterDto registerDto) {
 
         User user = authMapper.fromRegisterDto(registerDto);
         user.setProfile(new File(registerDto.getProfileId()));
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        user.setIsEnabled(true);
+        user.setIsEnabled(false);
 
         userRepository.insert(user);
 
@@ -89,12 +91,10 @@ public class AuthServiceImpl implements AuthService {
             userRepository.insertUserRole(user.getId(), roleId);
         });
 
-        LogInDto logInDto = LogInDto.builder()
-                .usernameOrEmail(registerDto.getEmail())
-                .password(registerDto.getPassword())
-                .build();
+        UserDto userDto = userMapper.toUserDto(user);
+        userDto.setProfile(fileService.getFileByID(registerDto.getProfileId()));
 
-        return this.logIn(logInDto);
+        return userDto;
     }
 
 

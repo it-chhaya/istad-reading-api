@@ -18,7 +18,7 @@ import java.util.List;
 @Builder
 @Getter
 @Setter
-@PasswordMatch(password = "templates/password", confirmedPassword = "confirmedPassword")
+@PasswordMatch(password = "password", confirmedPassword = "confirmedPassword")
 public class RegisterDto {
 
     @ConstraintUsername

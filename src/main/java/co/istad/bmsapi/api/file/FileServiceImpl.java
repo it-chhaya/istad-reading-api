@@ -58,7 +58,6 @@ public class FileServiceImpl implements FileService {
     }
 
 
-
     @Override
     public List<FileDto> getAllFiles() {
 
@@ -112,15 +111,34 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public void deleteFileByUUID(String uuid) {
-        fileRepository.selectByUUID(uuid).orElseThrow(() ->
-                new ResponseStatusException(HttpStatus.NOT_FOUND, "File with UUID = " + uuid + " is not found in DB"));
-        fileRepository.deleteByUUID(uuid);
-    }
 
+        File fileRes = fileRepository.selectByUUID(uuid).orElseThrow(() -> {
+            String reason = "File resource cannot be deleted";
+            Throwable cause = new Throwable("File with UUID = " + uuid + " is not found in DB");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, reason, cause);
+        });
+
+        fileRepository.deleteByUUID(uuid);
+
+        try {
+            Path path = Paths.get(serverPath + fileRes.getUuid() + "." +fileRes.getExtension());
+            Files.delete(path);
+//            java.io.File file = new java.io.File(path.);
+//            if (file.delete()) {
+//                System.out.println("File is deleted");
+//            } else {
+//                System.out.println("Fail is failed to delete.");
+//            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
 
 
     /**
      * Process of saving file by inserting into database and create a DTO response
+     *
      * @param file is the request part from client
      * @return FileDto
      */
@@ -165,8 +183,6 @@ public class FileServiceImpl implements FileService {
         return fileDto;
 
     }
-
-
 
 
 }

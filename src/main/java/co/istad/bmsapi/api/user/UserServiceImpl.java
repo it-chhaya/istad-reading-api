@@ -36,8 +36,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDto> getAllUsers() {
+
         List<User> users = userRepository.select();
-        return userMapper.toListDto(users);
+
+        List<UserDto> userDtoList = userMapper.toListDto(users);
+        userDtoList.forEach(userDto -> userDto.getProfile().buildNameAndUri(fileBaseUri));
+
+        return userDtoList;
     }
 
 

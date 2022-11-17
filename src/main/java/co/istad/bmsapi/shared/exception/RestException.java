@@ -5,12 +5,13 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.AccessDeniedException;
+
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
+
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.server.ResponseStatusException;
@@ -22,18 +23,18 @@ import co.istad.bmsapi.utils.DateTimeUtils;
 @RestControllerAdvice
 public class RestException {
 
-    @ExceptionHandler(value = RuntimeException.class)
-    public ResponseEntity<?> handleAccessDenied(RuntimeException e) {
 
-        System.out.println("access failed");
+    @ExceptionHandler(value = UsernameNotFoundException.class)
+    public ResponseEntity<?> handleUsernameNotFound(UsernameNotFoundException e) {
+
         var rest = new RestError<String>();
         rest.setStatus(false);
-        rest.setCode(HttpStatus.FORBIDDEN.value());
-        rest.setMessage("You cannot access this resources!");
+        rest.setCode(HttpStatus.NOT_FOUND.value());
+        rest.setMessage(e.getMessage());
         rest.setTimestamp(DateTimeUtils.getTS());
-        rest.setError(e.getMessage());
+        rest.setError("Email or Username does not exist in database!");
 
-        return new ResponseEntity<>(rest, HttpStatus.FORBIDDEN);
+        return new ResponseEntity<>(rest, HttpStatus.NOT_FOUND);
 
     }
 

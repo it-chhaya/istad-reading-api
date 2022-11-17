@@ -1,16 +1,10 @@
 package co.istad.bmsapi.data.repository;
 
 import java.util.List;
+import java.util.Optional;
 
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.InsertProvider;
-import org.apache.ibatis.annotations.Options;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.ResultMap;
-import org.apache.ibatis.annotations.Results;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.SelectProvider;
+import co.istad.bmsapi.api.file.File;
+import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
 import co.istad.bmsapi.api.genre.Genre;
@@ -18,13 +12,19 @@ import co.istad.bmsapi.data.provider.GenreProvider;
 
 @Repository
 public interface GenreRepository {
-    
+
+
+    @UpdateProvider(type = GenreProvider.class, method = "buildUpdateWhereIdSql")
+    void updateWhereId(@Param("genre") Genre genre);
+
     @SelectProvider(type = GenreProvider.class, method = "buildSelectSql")
     @Results(id = "genreResult", value = {
-        @Result(column = "is_enabled", property = "isEnabled")
+            @Result(column = "id", property = "id"),
+            @Result(column = "is_enabled", property = "isEnabled"),
+            @Result(column = "icon", property = "icon", one = @One(select = "selectGenreIcon"))
     })
     List<Genre> select();
-    
+
 
     @InsertProvider(type = GenreProvider.class, method = "buildInsertSql")
     @Options(useGeneratedKeys = true, keyColumn = "id", keyProperty = "id")
@@ -32,7 +32,8 @@ public interface GenreRepository {
 
 
     @SelectProvider(type = GenreProvider.class, method = "buildSelectWhereIdSql")
-    Genre selectWhereId(@Param("id") Integer id);
+    @ResultMap("genreResult")
+    Optional<Genre> selectWhereId(@Param("id") Integer id);
 
 
     @Delete("DELETE FROM genres WHERE id = #{id}")
@@ -44,5 +45,9 @@ public interface GenreRepository {
 
 
     int countWhereInId(@Param("ids") List<Integer> ids);
+
+
+    @SelectProvider(type = GenreProvider.class, method = "buildSelectGenreIconSql")
+    File selectGenreIcon(@Param("id") Long id);
 
 }
