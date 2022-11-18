@@ -17,14 +17,13 @@ import springfox.documentation.spring.web.plugins.Docket;
 public class SpringFoxConfig {
 
     private ApiInfo apiInfo() {
-
-        return new ApiInfo("ISTAD Reading APIs",
-                "APIs for ISTAD Reading App",
+        return new ApiInfo("iSTAD Reading APIs",
+                "APIs for iSTAD Reading App",
                 "1.0",
                 "Terms of service",
-                new Contact("077-45-99-47", "www.istad.co", "info.istad@gmail.com"),
-                "License of API",
-                "API license URL",
+                new Contact("077-45-99-47", "www.istad.co", "service.istad@gmail.com"),
+                "License of Usage",
+                "https://www.istad.co/page/privacy-policy",
                 Collections.emptyList());
     }
 
