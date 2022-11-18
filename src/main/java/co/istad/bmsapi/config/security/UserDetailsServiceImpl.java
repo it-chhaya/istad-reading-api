@@ -18,9 +18,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     private final UserRepository userRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String usernameOrEmail) throws UsernameNotFoundException {
 
-        User user = userRepository.selectWhereUsernameOrEmail(username, true).orElseThrow(() -> new UsernameNotFoundException("User is not found!"));
+        User user = userRepository.selectWhereUsernameOrEmail(usernameOrEmail, true).orElseThrow(() -> new UsernameNotFoundException("User is not found!"));
+        log.info("User = {}", user);
 
         CustomUserSecurity userSecurity = new CustomUserSecurity();
         userSecurity.setUser(user);

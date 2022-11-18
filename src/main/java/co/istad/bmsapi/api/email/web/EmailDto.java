@@ -1,20 +1,28 @@
-package co.istad.bmsapi.api.email;
+package co.istad.bmsapi.api.email.web;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import org.thymeleaf.context.Context;
+
+import javax.validation.constraints.NotBlank;
 
 @AllArgsConstructor
 @Builder
 @Getter
 @Setter
-public class Mail<T> {
+public class EmailDto<T> {
 
+    @NotBlank
     private String receiver;
+
+    @NotBlank
     private String subject;
+
+    @JsonIgnore
     private String templateName;
+
     private T additionalInfo;
 
 }

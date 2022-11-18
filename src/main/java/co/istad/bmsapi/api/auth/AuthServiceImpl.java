@@ -5,7 +5,7 @@ import co.istad.bmsapi.api.auth.web.ChangePasswordDto;
 import co.istad.bmsapi.api.auth.web.LogInDto;
 import co.istad.bmsapi.api.auth.web.RegisterDto;
 import co.istad.bmsapi.api.email.EmailServiceImpl;
-import co.istad.bmsapi.api.email.Mail;
+import co.istad.bmsapi.api.email.web.EmailDto;
 import co.istad.bmsapi.api.file.File;
 import co.istad.bmsapi.api.file.FileServiceImpl;
 import co.istad.bmsapi.api.user.User;
@@ -16,9 +16,11 @@ import co.istad.bmsapi.data.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -45,25 +47,41 @@ public class AuthServiceImpl implements AuthService {
     private final AuthMapper authMapper;
 
     @Override
-    public void changePassword(Long id, ChangePasswordDto changePasswordDto) {
-        try {
-            String encodedPassword = bCryptPasswordEncoder.encode(changePasswordDto.getPassword());
-            userRepository.updatePasswordWhereId(id, encodedPassword);
-        } catch (Exception e) {
+    public void changePassword(ChangePasswordDto changePasswordDto) {
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        CustomUserSecurity customUserSecurity = (CustomUserSecurity) auth.getPrincipal();
+
+        if (!bCryptPasswordEncoder.matches(changePasswordDto.getCurrentPassword(), customUserSecurity.getPassword())) {
             String reason = "Change password is failed!";
-            Throwable cause = new Throwable("Internal server error, please contact the developer!");
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, reason, cause);
+            Throwable cause = new Throwable("Current password is wrong!");
+            throw new BadCredentialsException(reason, cause);
         }
+
+        Long userId = customUserSecurity.getUser().getId();
+
+        String encodedPassword = bCryptPasswordEncoder.encode(changePasswordDto.getNewPassword());
+
+        userRepository.updatePasswordWhereId(userId, encodedPassword);
+
     }
 
     @Override
     public AuthDto logIn(LogInDto logInDto) {
 
+        System.out.println("Log in = " + logInDto);
+
         // Get user data
         Authentication authentication = daoAuthenticationProvider.authenticate(new UsernamePasswordAuthenticationToken(logInDto.getUsernameOrEmail(), logInDto.getPassword()));
         CustomUserSecurity customUserSecurity = (CustomUserSecurity) authentication.getPrincipal();
+
+        System.out.println(customUserSecurity.getUser());
+
         UserDto userDto = userMapper.toUserDto(customUserSecurity.getUser());
+        System.out.println(userDto);
         userDto.getProfile().buildNameAndUri(fileBaseUri);
+
+        System.out.println(userDto.getEmail());
 
         // Setup role for response with authDto
         List<String> roles = new ArrayList<>();
@@ -119,14 +137,14 @@ public class AuthServiceImpl implements AuthService {
 
         userRepository.updateVerificationCodeWhereId(user.getId(), user.getVerificationCode());
 
-        Mail<?> mail = Mail.builder()
+        EmailDto<?> emailDto = EmailDto.builder()
                 .receiver(email)
                 .subject("Email Verification")
                 .templateName("email/email-confirmation")
                 .additionalInfo(user)
                 .build();
 
-        emailService.sendEmail(mail);
+        emailService.sendEmail(emailDto);
     }
 
 

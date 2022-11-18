@@ -50,8 +50,7 @@ public class UserProvider {
         return new SQL() {{
             SELECT("i.id, i.uuid, i.extension, i.size, i.is_enabled");
             FROM("images AS i");
-            INNER_JOIN("users AS u ON u.profile = i.id");
-            WHERE("u.id = #{id}");
+            WHERE("i.id = #{id}");
         }}.toString();
     }
 

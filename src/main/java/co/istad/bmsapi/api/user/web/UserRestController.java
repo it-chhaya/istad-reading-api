@@ -3,6 +3,7 @@ package co.istad.bmsapi.api.user.web;
 import java.security.Principal;
 import java.util.List;
 
+import co.istad.bmsapi.api.book.web.SavedBookDto;
 import co.istad.bmsapi.api.user.User;
 import co.istad.bmsapi.api.user.UserMapper;
 import co.istad.bmsapi.config.security.CustomUserSecurity;
@@ -71,6 +72,12 @@ public class UserRestController {
 
 
     @PutMapping("/{id}")
+    ResponseEntity<?> doUpdateUserById(@PathVariable("id") Long id, @RequestBody SavedBookDto savedBookDto) {
+        return ResponseEntity.ok(savedBookDto);
+    }
+
+
+    @PutMapping("/{id}/enable-user-status")
     ResponseEntity<?> enableOrDisableUserById(@PathVariable("id") Long id, @RequestBody IsEnabledDto isEnabledDto) {
 
         UserDto userDto = userServiceImpl.enableAndDisableUser(id, isEnabledDto.getStatus());

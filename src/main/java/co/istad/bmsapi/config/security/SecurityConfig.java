@@ -42,7 +42,6 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        // Start configuring
         http
                 .csrf().disable()
                 .authorizeRequests()
@@ -53,7 +52,11 @@ public class SecurityConfig {
                         "/swagger-resources",
                         "/swagger-resources/configuration/ui",
                         "/swagger-resources/configuration/security").permitAll()
-                .antMatchers("/api/v1/auth/**").permitAll()
+                .antMatchers("/api/v1/auth/login",
+                        "/api/v1/auth/register",
+                        "/api/v1/auth/send-email-confirmation",
+                        "/api/v1/auth/verify-email",
+                        "/api/v1/users/me").permitAll()
                 .antMatchers("/api/v1/users/**").hasAnyRole("ADMIN")
                 .anyRequest().authenticated()
                 .and()

@@ -47,7 +47,7 @@ public class BookRestController {
     }
 
 
-    @PostMapping("/fetch")
+    @GetMapping
     ResponseEntity<?> getBooks(@RequestBody(required = false) BookFilter bookFilter,
                                @RequestParam(required = false, defaultValue = "1") int pageNum,
                                @RequestParam(required = false, defaultValue = "20") int pageSize) {

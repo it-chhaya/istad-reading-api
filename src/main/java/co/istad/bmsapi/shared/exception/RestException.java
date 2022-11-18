@@ -44,9 +44,9 @@ public class RestException {
         var rest = new RestError<String>();
         rest.setStatus(false);
         rest.setCode(HttpStatus.UNAUTHORIZED.value());
-        rest.setMessage("Log in failed!");
+        rest.setMessage(e.getMessage());
         rest.setTimestamp(DateTimeUtils.getTS());
-        rest.setError(e.getMessage());
+        rest.setError(e.getCause() != null ? e.getCause().getMessage() : e.getMessage());
 
         return new ResponseEntity<>(rest, HttpStatus.UNAUTHORIZED);
 

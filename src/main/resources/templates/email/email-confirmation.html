@@ -204,7 +204,7 @@
                                                         <p>Welcome! Thanks for registering an account with iSTAD
                                                             Reading!
                                                             Please try to study hard for your future.</p>
-                                                        <p>Before we get started, we'll need to verify your email.</p>
+                                                        <p>Before we get started, we'll need to verify your emailDto.</p>
 
                                                     </div>
                                                 </td>
@@ -218,7 +218,7 @@
                                                         <tr>
                                                             <td style="border:none;border-radius:3px;color:white;cursor:auto;padding:15px 19px;"
                                                                 align="center" valign="middle" bgcolor="#7289DA">
-                                                                <a th:href="${apiBaseUrl+'auth/verify-email?email='+additionalInfo.email+'&&verificationCode='+additionalInfo.verificationCode}"
+                                                                <a th:href="${apiBaseUrl+'auth/verify-email?email='+additionalInfo.email+'&verificationCode='+additionalInfo.verificationCode}"
                                                                     style="text-decoration:none;line-height:100%;background:#7289DA;color:white;font-family:Ubuntu, Helvetica, Arial, sans-serif;font-size:15px;font-weight:normal;text-transform:none;margin:0px;"
                                                                     target="_blank">
                                                                     Verify Email

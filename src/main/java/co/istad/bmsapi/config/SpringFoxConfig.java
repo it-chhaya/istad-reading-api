@@ -18,10 +18,10 @@ public class SpringFoxConfig {
 
     private ApiInfo apiInfo() {
         return new ApiInfo("iSTAD Reading APIs",
-                "APIs for iSTAD Reading App",
+                "Open APIs for iSTAD Reading App",
                 "1.0",
-                "Terms of service",
-                new Contact("077-45-99-47", "www.istad.co", "service.istad@gmail.com"),
+                "https://www.istad.co/page/privacy-policy",
+                new Contact("ISTAD Developers", "https://www.istad.co", "service.istad@gmail.com"),
                 "License of Usage",
                 "https://www.istad.co/page/privacy-policy",
                 Collections.emptyList());
@@ -49,7 +49,7 @@ public class SpringFoxConfig {
                 .securitySchemes(auth)
                 .securityContexts(securityContexts)
                 .select()
-                .apis(RequestHandlerSelectors.any())
+                .apis(RequestHandlerSelectors.basePackage("co.istad.bmsapi.api"))
                 .paths(PathSelectors.any())
                 .build();
     }

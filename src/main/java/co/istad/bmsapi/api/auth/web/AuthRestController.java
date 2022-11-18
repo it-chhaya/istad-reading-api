@@ -71,10 +71,10 @@ public class AuthRestController {
     }
 
 
-    @PutMapping("/{id}/change-password")
-    ResponseEntity<?> changePassword(@PathVariable("id") Long id, @Valid @RequestBody ChangePasswordDto changePasswordDto) {
+    @PostMapping("/change-password")
+    ResponseEntity<?> changePassword(@Valid @RequestBody ChangePasswordDto changePasswordDto) {
 
-        authService.changePassword(id, changePasswordDto);
+        authService.changePassword(changePasswordDto);
 
         var rest = new HashMap<String, Object>();
         rest.put("status", true);

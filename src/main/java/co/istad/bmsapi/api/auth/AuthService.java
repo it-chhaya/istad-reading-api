@@ -31,10 +31,9 @@ public interface AuthService {
 
     /**
      * Change password of user
-     * @param id is the identifier of user
      * @param changePasswordDto contains required credentials
      */
-    void changePassword(Long id, ChangePasswordDto changePasswordDto);
+    void changePassword(ChangePasswordDto changePasswordDto);
 
 
     void sendEmailConfirmation(String email) throws MessagingException, UnsupportedEncodingException;

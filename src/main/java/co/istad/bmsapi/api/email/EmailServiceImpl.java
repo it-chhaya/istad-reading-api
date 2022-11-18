@@ -1,5 +1,6 @@
 package co.istad.bmsapi.api.email;
 
+import co.istad.bmsapi.api.email.web.EmailDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -30,23 +31,25 @@ public class EmailServiceImpl implements EmailService {
 
 
     @Override
-    public void sendEmail(Mail<?> mail) throws MessagingException, UnsupportedEncodingException {
+    public EmailDto sendEmail(EmailDto<?> emailDto) throws MessagingException, UnsupportedEncodingException {
 
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper messageHelper = new MimeMessageHelper(message);
 
         var context = new Context();
-        context.setVariable("additionalInfo", mail.getAdditionalInfo());
+        context.setVariable("additionalInfo", emailDto.getAdditionalInfo());
         context.setVariable("apiBaseUrl", apiBaseUrl);
 
-        String html = templateEngine.process(mail.getTemplateName(), context);
+        String html = templateEngine.process(emailDto.getTemplateName(), context);
 
-        messageHelper.setTo(mail.getReceiver());
+        messageHelper.setTo(emailDto.getReceiver());
         messageHelper.setFrom(sender, appName);
         messageHelper.setText(html, true);
-        messageHelper.setSubject(mail.getSubject());
+        messageHelper.setSubject(emailDto.getSubject());
 
         mailSender.send(message);
+
+        return emailDto;
     }
 
 }
