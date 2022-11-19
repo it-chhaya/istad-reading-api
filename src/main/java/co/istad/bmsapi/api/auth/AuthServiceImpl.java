@@ -150,8 +150,10 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public void verifyEmail(String email, String verificationCode) {
+
         User user = userRepository.selectWhereEmailAndVerificationCode(email, verificationCode)
                 .orElseThrow(() -> new UsernameNotFoundException("User is not found!"));
+        
         userRepository.updateVerificationCodeWhereId(user.getId(), null);
         userRepository.updateIsEnabledWhereId(user.getId(), true);
     }

@@ -123,12 +123,6 @@ public class FileServiceImpl implements FileService {
         try {
             Path path = Paths.get(serverPath + fileRes.getUuid() + "." +fileRes.getExtension());
             Files.delete(path);
-//            java.io.File file = new java.io.File(path.);
-//            if (file.delete()) {
-//                System.out.println("File is deleted");
-//            } else {
-//                System.out.println("Fail is failed to delete.");
-//            }
         } catch (Exception e) {
             e.printStackTrace();
         }
