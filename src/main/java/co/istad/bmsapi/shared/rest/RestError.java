@@ -1,8 +1,6 @@
 package co.istad.bmsapi.shared.rest;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -15,6 +13,6 @@ public class RestError<T> {
     private Integer code;
     private String message;
     private Timestamp timestamp;
-    private T errors;
+    private T error;
 
 }

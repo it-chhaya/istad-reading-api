@@ -1,27 +1,22 @@
 package co.istad.bmsapi.api.book;
 
-import java.util.List;
-
-import org.mapstruct.Mapper;
-
-import com.github.pagehelper.PageInfo;
-
 import co.istad.bmsapi.api.book.web.BookDto;
+import co.istad.bmsapi.api.book.web.BookFilter;
 import co.istad.bmsapi.api.book.web.SavedBookDto;
+import com.github.pagehelper.PageInfo;
+import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface BookMapper {
 
-    Book toSavedModel(SavedBookDto savedBookDto);
+    PageInfo<BookDto> toBookDtoList(PageInfo<Book> bookList);
 
-    Book toModel(BookDto bookDto);
+    Book fromBookFilter(BookFilter bookFilter);
 
-    BookDto fromModel(Book book);
+    Book fromBookDto(BookDto bookDto);
 
-    List<Book> toListModel(List<BookDto> bookDtoList);
+    BookDto toBookDto(Book book);
 
-    List<BookDto> fromListModel(List<Book> bookList);
-    
-    PageInfo<BookDto> fromPageInfoModel(PageInfo<Book> books);
+    Book fromSavedBookDto(SavedBookDto savedBookDto);
 
 }

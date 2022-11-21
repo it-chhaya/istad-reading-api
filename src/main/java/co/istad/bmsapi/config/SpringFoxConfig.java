@@ -1,5 +1,6 @@
 package co.istad.bmsapi.config;
 
+import java.util.ArrayList;
 import java.util.Collections;
 
 import org.springframework.context.annotation.Bean;
@@ -7,34 +8,50 @@ import org.springframework.context.annotation.Configuration;
 
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
-import springfox.documentation.service.ApiInfo;
-import springfox.documentation.service.Contact;
+import springfox.documentation.service.*;
 import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spi.service.contexts.SecurityContext;
 import springfox.documentation.spring.web.plugins.Docket;
 
 @Configuration
 public class SpringFoxConfig {
 
     private ApiInfo apiInfo() {
-        
-        return new ApiInfo("ISTAD Reading APIs",
-                "APIs for ISTAD Reading App",
+        return new ApiInfo("iSTAD Reading APIs",
+                "Open APIs for iSTAD Reading App",
                 "1.0",
-                "Terms of service",
-                new Contact("077-45-99-47", "www.istad.co", "info.istad@gmail.com"),
-                "License of API",
-                "API license URL",
+                "https://www.istad.co/page/privacy-policy",
+                new Contact("ISTAD Developers", "https://www.istad.co", "service.istad@gmail.com"),
+                "License of Usage",
+                "https://www.istad.co/page/privacy-policy",
                 Collections.emptyList());
     }
-    
+
     @Bean
-    public Docket api() { 
+    public Docket api() {
+
+        SecurityReference securityReference = SecurityReference.builder()
+                .reference("basicAuth")
+                .scopes(new AuthorizationScope[0])
+                .build();
+
+        ArrayList<SecurityReference> references = new ArrayList<>(1);
+        references.add(securityReference);
+
+        ArrayList<SecurityContext> securityContexts = new ArrayList<>(1);
+        securityContexts.add(SecurityContext.builder().securityReferences(references).build());
+
+        ArrayList<SecurityScheme> auth = new ArrayList<>(1);
+        auth.add(new BasicAuth("basicAuth"));
+
         return new Docket(DocumentationType.SWAGGER_2)
-          .apiInfo(apiInfo())
-          .select()                                  
-          .apis(RequestHandlerSelectors.any())              
-          .paths(PathSelectors.any())                          
-          .build();                                           
+                .apiInfo(apiInfo())
+                .securitySchemes(auth)
+                .securityContexts(securityContexts)
+                .select()
+                .apis(RequestHandlerSelectors.basePackage("co.istad.bmsapi.api"))
+                .paths(PathSelectors.any())
+                .build();
     }
 
 }

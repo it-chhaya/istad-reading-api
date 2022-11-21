@@ -12,13 +12,18 @@ import lombok.Setter;
 @Setter
 @Builder
 public class FileDto {
-    
+
     private Long id;
     private String uuid;
     private String name;
     private String uri;
     private String extension;
-    private Float size;
-    private Boolean isEnabled;
+    private Long size;
+    //private Boolean isEnabled;
+
+    public void buildNameAndUri(String baseUri) {
+        name = String.format("%s.%s", uuid, extension);
+        uri = baseUri + name;
+    }
 
 }

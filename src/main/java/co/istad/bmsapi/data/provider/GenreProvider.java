@@ -6,20 +6,30 @@ import org.apache.ibatis.jdbc.SQL;
 import co.istad.bmsapi.api.genre.Genre;
 
 public class GenreProvider {
+
+
+    public String buildUpdateWhereIdSql() {
+        return new SQL() {{
+            UPDATE("genres");
+            SET("title = #{genre.title}");
+            SET("description = #{genre.description}");
+            SET("icon = #{genre.icon.id}");
+            WHERE("id = #{genre.id}");
+        }}.toString();
+    }
     
     public String buildSelectSql() {
         return new SQL() {{
             SELECT("*");
             FROM("genres");
             WHERE("is_enabled = TRUE");
+            ORDER_BY("id DESC");
         }}.toString();
-        // select * from genres where is_enabled = true
     }
 
 
     public String buildInsertSql(@Param("genre") Genre genre) {
         return new SQL() {{
-            // YOUR SQL
             INSERT_INTO("genres");
 
             if (!genre.getTitle().isBlank()) {
@@ -27,7 +37,7 @@ public class GenreProvider {
             }
             
             VALUES("description", "#{genre.description}");
-            VALUES("icon", "#{genre.icon}");
+            VALUES("icon", "#{genre.icon.id}");
             VALUES("is_enabled", "#{genre.isEnabled}");
         }}.toString();
     }
@@ -38,6 +48,15 @@ public class GenreProvider {
             SELECT("*");
             FROM("genres");
             WHERE("id = #{id}", "is_enabled = TRUE");
+        }}.toString();
+    }
+
+
+    public String buildSelectGenreIconSql() {
+        return new SQL() {{
+            SELECT("i.id", "i.uuid", "i.extension", "i.size", "i.is_enabled");
+            FROM("images AS i");
+            WHERE("i.id = #{id}");
         }}.toString();
     }
 

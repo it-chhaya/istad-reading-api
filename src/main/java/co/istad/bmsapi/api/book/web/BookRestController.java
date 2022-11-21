@@ -1,69 +1,46 @@
 package co.istad.bmsapi.api.book.web;
 
-import javax.validation.Valid;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.github.pagehelper.PageInfo;
-
 import co.istad.bmsapi.api.book.BookServiceImpl;
 import co.istad.bmsapi.shared.rest.Rest;
+import com.github.pagehelper.PageInfo;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/v1/books")
 @RequiredArgsConstructor
 public class BookRestController {
 
-    private final BookServiceImpl bookServiceImpl;
+    private final BookServiceImpl bookService;
 
-    @PostMapping
-    public ResponseEntity<?> postBook(@RequestBody @Valid SavedBookDto body) {
-        
-        BookDto bookDto = bookServiceImpl.postBook(body);
 
-        var rest = new Rest<BookDto>();
+    @PutMapping("/{id}/cover")
+    ResponseEntity<?> changeCover(@PathVariable("id") Long id, @Valid @RequestBody CoverDto coverDto) {
+
+        String uri = bookService.changeCoverById(id, coverDto);
+
+        var rest = new Rest<String>();
         rest.setStatus(true);
         rest.setCode(HttpStatus.OK.value());
-        rest.setMessage("Books have been saved");
-        rest.setData(bookDto);
-
-        return ResponseEntity.ok(rest);
-    }
-    
-    @PutMapping("/{id}")
-    public ResponseEntity<?> putBook(@PathVariable("id") Long id, @RequestBody @Valid SavedBookDto body) {
-        
-        BookDto bookDto = bookServiceImpl.putBook(id, body);
-
-        var rest = new Rest<BookDto>();
-        rest.setStatus(true);
-        rest.setCode(HttpStatus.OK.value());
-        rest.setMessage("Books have been saved");
-        rest.setData(bookDto);
+        rest.setMessage("Book cover has been changed.");
+        rest.setData(uri);
 
         return ResponseEntity.ok(rest);
     }
 
+    @PutMapping("/{id}/star-rating")
+    ResponseEntity<?> rateStar(@PathVariable("id") Long id, @Valid @RequestBody StarRatingDto body) {
 
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getBookById(@PathVariable("id") Long id) {
-        
-        BookDto bookDto = bookServiceImpl.getBookById(id);
+        BookDto bookDto = bookService.rateStarById(id, body);
 
         var rest = new Rest<BookDto>();
         rest.setStatus(true);
         rest.setCode(HttpStatus.OK.value());
-        rest.setMessage("Books have been saved");
+        rest.setMessage("Book has been rated.");
         rest.setData(bookDto);
 
         return ResponseEntity.ok(rest);
@@ -71,19 +48,74 @@ public class BookRestController {
 
 
     @GetMapping
-    public ResponseEntity<?> getBooks(
-        @RequestParam(required = false, defaultValue = "1") int pageNum,
-        @RequestParam(required = false, defaultValue = "20") int pageSize) {
+    ResponseEntity<?> getBooks(@RequestBody(required = false) BookFilter bookFilter,
+                               @RequestParam(required = false, defaultValue = "1") int pageNum,
+                               @RequestParam(required = false, defaultValue = "20") int pageSize) {
 
-        var books = bookServiceImpl.getBooks(pageNum, pageSize);
-        
-        var rest = new Rest<PageInfo<BookDto>>();
+        PageInfo<BookDto> bookDtoList = bookService.getAllBooks(bookFilter, pageNum, pageSize);
+
+        Rest<PageInfo<BookDto>> rest = new Rest<>();
         rest.setStatus(true);
         rest.setCode(HttpStatus.OK.value());
         rest.setMessage("Books have been fetched");
-        rest.setData(books);
+        rest.setData(bookDtoList);
 
         return ResponseEntity.ok(rest);
+    }
+
+
+    @GetMapping("/{id}")
+    ResponseEntity<?> getBookById(@PathVariable Long id) {
+
+        Rest<BookDto> rest = new Rest<>();
+        rest.setStatus(true);
+        rest.setCode(HttpStatus.OK.value());
+        rest.setMessage("Book has been fetched.");
+        rest.setData(bookService.getBookById(id));
+
+        return ResponseEntity.ok(rest);
+    }
+
+
+    @DeleteMapping("/{id}")
+    ResponseEntity<?> deleteBookById(@PathVariable Long id) {
+
+        bookService.deleteBookById(id);
+
+        var rest = new Rest<Long>();
+        rest.setStatus(true);
+        rest.setCode(HttpStatus.OK.value());
+        rest.setMessage("Book has been deleted.");
+        rest.setData(id);
+
+        return ResponseEntity.ok(rest);
+    }
+
+
+    @PostMapping
+    ResponseEntity<?> save(@Valid @RequestBody SavedBookDto savedBookDto) {
+        return ResponseEntity.ok(this.saveBook(savedBookDto));
+    }
+
+
+    @PutMapping("/{id}")
+    ResponseEntity<?> update(@Valid @RequestBody SavedBookDto savedBookDto, @PathVariable("id") Long id) {
+        savedBookDto.setId(id);
+        return ResponseEntity.ok(this.saveBook(savedBookDto));
+    }
+
+
+    private Rest<?> saveBook(SavedBookDto savedBookDto) {
+
+        BookDto bookDto = bookService.save(savedBookDto);
+
+        var rest = new Rest<BookDto>();
+        rest.setStatus(true);
+        rest.setCode(HttpStatus.OK.value());
+        rest.setMessage("Book has been saved.");
+        rest.setData(bookDto);
+
+        return rest;
     }
 
 }

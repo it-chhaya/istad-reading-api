@@ -1,14 +1,5 @@
 package co.istad.bmsapi.api.file;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -20,9 +11,15 @@ import co.istad.bmsapi.data.repository.FileRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
+
 @Service
-@Slf4j
 @RequiredArgsConstructor
+@Slf4j
 public class FileServiceImpl implements FileService {
 
     private final FileRepository fileRepository;
@@ -34,31 +31,115 @@ public class FileServiceImpl implements FileService {
     @Value("${file.uri}")
     private String uri;
 
+
+    @Override
+    public boolean existsFileID(Long id) {
+        return fileRepository.existsFileID(id);
+    }
+
+
     @Override
     public FileDto uploadOne(MultipartFile file) {
-        return this.save(file);
+        return save(file);
     }
+
 
     @Override
     public List<FileDto> uploadAll(List<MultipartFile> files) {
-        
-        List<FileDto> fileDtoList = new ArrayList<>();
-        
+
+        List<FileDto> fileModels = new ArrayList<>();
+
         for (MultipartFile file : files) {
-            fileDtoList.add(this.save(file));
+            FileDto fileDto = save(file);
+            fileModels.add(fileDto);
         }
+
+        return fileModels;
+    }
+
+
+    @Override
+    public List<FileDto> getAllFiles() {
+
+        List<File> files = fileRepository.select();
+
+        List<FileDto> fileDtoList = fileMapper.toFileDtoList(files);
+
+        fileDtoList.forEach(fileDto -> {
+            String name = fileDto.getUuid() + "." + fileDto.getExtension();
+            fileDto.setName(name);
+            fileDto.setUri(uri + name);
+        });
 
         return fileDtoList;
     }
 
 
+    @Override
+    public FileDto getFileByID(Long id) {
+
+        Optional<File> opFile = fileRepository.selectByID(id);
+
+        File file = opFile.orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "File with ID = " + id + " is not found in DB"));
+
+        FileDto fileDto = fileMapper.toFileDto(file);
+        String name = fileDto.getUuid() + "." + fileDto.getExtension();
+        fileDto.setName(name);
+        fileDto.setUri(uri + name);
+
+        return fileDto;
+    }
+
+
+    @Override
+    public FileDto getFileByUUID(String uuid) {
+
+        Optional<File> opFile = fileRepository.selectByUUID(uuid);
+
+        File file = opFile.orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "File with UUID = " + uuid + " is not found in DB"));
+
+        FileDto fileDto = fileMapper.toFileDto(file);
+        String name = fileDto.getUuid() + "." + fileDto.getExtension();
+        fileDto.setName(name);
+        fileDto.setUri(uri + name);
+
+        return fileDto;
+    }
+
+
+    @Override
+    public void deleteFileByUUID(String uuid) {
+
+        File fileRes = fileRepository.selectByUUID(uuid).orElseThrow(() -> {
+            String reason = "File resource cannot be deleted";
+            Throwable cause = new Throwable("File with UUID = " + uuid + " is not found in DB");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, reason, cause);
+        });
+
+        fileRepository.deleteByUUID(uuid);
+
+        try {
+            Path path = Paths.get(serverPath + fileRes.getUuid() + "." +fileRes.getExtension());
+            Files.delete(path);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
+    /**
+     * Process of saving file by inserting into database and create a DTO response
+     *
+     * @param file is the request part from client
+     * @return FileDto
+     */
     private FileDto save(MultipartFile file) {
 
         String randomUUID = UUID.randomUUID().toString();
         String extension = "";
-
-        // randomUUID + extension
-        // WERTYUIOIUGFDCFGHJ.jpg
         String fileName = "";
 
         if (!file.isEmpty()) {
@@ -78,19 +159,18 @@ public class FileServiceImpl implements FileService {
 
         } else {
             String reason = "File is not found in body";
-            System.out.println(reason);
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, reason);
         }
 
         File fileModel = new File();
         fileModel.setUuid(randomUUID);
         fileModel.setExtension(extension);
-        fileModel.setSize(Float.valueOf(file.getSize()));
+        fileModel.setSize(file.getSize());
         fileModel.setIsEnabled(true);
 
         fileRepository.insert(fileModel);
 
-        FileDto fileDto = fileMapper.fromModel(fileModel);
+        FileDto fileDto = fileMapper.toFileDto(fileModel);
         fileDto.setName(fileName);
         fileDto.setUri(uri + fileName);
 
@@ -99,22 +179,4 @@ public class FileServiceImpl implements FileService {
     }
 
 
-    @Override
-    public boolean existsFileID(Long id) {
-        return fileRepository.existsById(id);
-    }
-
-
-    @Override
-    public FileDto getFileById(Long id) {
-
-        File file = fileRepository.selectById(id);
-
-        FileDto fileDto = fileMapper.fromModel(file);
-        fileDto.setName(file.getUuid() + "." + file.getExtension());
-        fileDto.setUri(uri + fileDto.getName());
-
-        return fileDto;
-    }
-    
 }

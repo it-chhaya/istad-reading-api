@@ -3,6 +3,7 @@ package co.istad.bmsapi.config;
 import javax.sql.DataSource;
 
 import com.github.pagehelper.PageInterceptor;
+import lombok.RequiredArgsConstructor;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,14 +14,10 @@ import java.util.Properties;
 
 @Configuration
 @MapperScan(value = "co.istad.bmsapi.data.repository")
+@RequiredArgsConstructor
 public class MyBatisConfig {
     
-    private DataSource dataSource;
-
-    @Autowired
-    public void setDataSource(DataSource dataSource) {
-        this.dataSource = dataSource;
-    }
+    private final DataSource dataSource;
 
     @Bean
     public SqlSessionFactoryBean sqlSessionFactoryBean() {

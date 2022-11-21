@@ -1,20 +1,23 @@
 package co.istad.bmsapi.api.genre.web;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Positive;
 
-import lombok.Data;
+import co.istad.bmsapi.shared.validation.fileid.ConstraintFileId;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
+@Builder
+@AllArgsConstructor
 public class PostGenreDto {
 
-    @NotBlank(message = "Title cannot be nulled")
+    @NotBlank
     private String title;
 
-    @NotBlank(message = "Description cannot be nulled")
+    @NotBlank
     private String description;
 
-    @Positive
-    private Integer icon;
+    @ConstraintFileId
+    private Long iconId;
 
 }

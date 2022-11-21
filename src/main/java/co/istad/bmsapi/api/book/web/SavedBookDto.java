@@ -1,27 +1,28 @@
 package co.istad.bmsapi.api.book.web;
 
-import java.util.List;
-
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-
-import co.istad.bmsapi.shared.constraint.fileid.ConstraintFileId;
-import co.istad.bmsapi.shared.constraint.genreids.ConstraintGenreIds;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
-@NoArgsConstructor
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
+import co.istad.bmsapi.shared.validation.fileid.ConstraintFileId;
+
+import java.util.List;
+
 @AllArgsConstructor
+@Builder
 @Getter
 @Setter
-@Builder
-@ToString
 public class SavedBookDto {
-    
+
+    @JsonIgnore
+    private Long id;
+
     @NotBlank
     private String title;
 
@@ -30,15 +31,16 @@ public class SavedBookDto {
     @NotBlank
     private String author;
 
-    @NotNull
-    private Boolean isPublic;
-
     @ConstraintFileId
     private Long fileId;
 
     private String pdf;
 
-    @ConstraintGenreIds
+    @NotNull
+    private Boolean isPublished;
+
+    // @ConstraintGenreId
+    @NotEmpty(message = "You must specify the genre id.")
     private List<Integer> genreIds;
 
 }
